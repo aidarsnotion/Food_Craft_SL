@@ -1,0 +1,12 @@
+{% extends "client_templates/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Информация о продукте" %}{% endblock page_title%}
+
+{% block content %}
+
+<iframe id="iframe_pdf" src="{{ getpdf.url }}" 
+      style="width:800px; height:800px;" frameborder="0"></iframe>
+
+{% endblock content %}

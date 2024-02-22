@@ -1,0 +1,229 @@
+{% load static %}
+{% load i18n %}
+
+<style>
+	#ingredients-wrapper {
+		position: relative;
+	}
+
+	.btn-calculate {
+		background-color: #F28123;
+		color: #fff;
+		font-weight: bold;
+	}
+
+	.btn-calculate:hover {
+		background-color: #ff7f16;
+		color: #fff;
+	}
+
+	.btn-add {
+		background-color: #374b56;
+		color: #fff;
+		font-weight: bold;
+	}
+
+	.btn-add:hover {
+		background-color: #06374f;
+		color: #fff;
+	}
+
+	.btn-wrapper {
+		z-index: 5;
+		position: absolute;
+		right: 0;
+	}
+
+	.control-btns {
+		width: 50px;
+		cursor: pointer;
+	}
+
+	.delete-btn .fa-times {
+		font-size: 22px;
+		color: red;
+	}
+
+	.control-btns:hover .fa-times {
+		color: #F28123;
+		transition: .5s;
+
+	}
+
+	.bg-custom {
+		background-color: rgba(0, 0, 0, .05);
+	}
+
+	.card-title h3 {
+		text-align: center;
+		font-size: 18px;
+		font-family: Open Sans, sans-serif;
+	}
+
+	select.form-control {
+		margin-bottom: 15px;
+	}
+
+	.ing-num-wrapper {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+
+	.ing-num {
+		font-weight: bolder;
+		color: rgba(0, 0, 0, .2);
+	}
+
+	@media print {
+		.no-print{
+			display: none;
+		}
+		.chart-print{
+			width: 100%;
+		}
+	}
+</style>
+
+<!-- cart -->
+<div class="cart-section mb-150">
+	<div class="container">
+		<div class="card-title  mt-5">
+			{% if error_message %}
+			<div class="alert alert-danger alert-dismissible" role="alert">{{error_message}}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{% endif %}
+		</div>
+		
+		<hr>
+
+		<div class="alert alert-success alert-dismissible mb-4" role="alert"><b>Вы находитесь в разделе оптимизация. Введите ограничения, после нажмите на кнопку "Выполнить"</b>
+			<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+				<span aria-hidden="true">&times;</span>
+			</button>
+		</div>
+
+		<form id="optimization-form">
+				{% csrf_token %}
+
+		<div class="row mb-5 pt-3 justify-content-center">
+			<div class="col-lg-3 col-sm-12">
+				<div class="form-outline">
+					<select name="ingredients" id="ingredient" class="form-control" required>
+						<option value="0">Выберите эталонный продукт</option>
+						{% for value in etalon %}
+						<option value="{{value.id}}">{{value.name}}</option>
+						{% endfor %}
+					</select>
+					<label class="form-label font-weight-bold" for="meal">{% translate "Ингредиент" %}</label>
+				</div>
+			</div>
+		</div>
+
+		<input type="hidden" name="prot" id="prot" value="{{protein}}">
+		<input type="hidden" name="fatacid" id="fatacid" value="{{fatacid}}">
+		<input type="hidden" name="price" id="price" value="{{price}}">
+		<input type="hidden" name="carbo" id="carbo" value="{{carbohydrates}}">
+		<input type="hidden" name="counter" id="counter" value="{{counter}}">
+		<!-- Submit button -->
+		
+		<div class="col-12 pt-3">
+			<div class="row justify-content-center">
+				<div class="col-6">
+					<button type="button" class="btn btn-calculate btn-block mb-4" id="optimization_bnt">{% translate "Выполнить" %}</button>
+				</div>
+			</div>
+			
+		</div>
+		</form>
+	</div>
+
+<!-- end cart -->
+	<div class="container" id="outputoptimization">
+
+	</div>
+
+{% block custom_js%}
+<script src="{% static 'client/js/jquery-1.11.3.min.js'%}"></script>
+	<script>
+		$('#optimization_bnt').on('click', function () {
+
+			
+			var protein_ingredient = document.getElementById("prot").value;
+			var fatacid_ingredient = document.getElementById("fatacid").value;
+			var price_ingredient = document.getElementById("price").value;
+			var carbo_ingredient = document.getElementById("carbo").value;
+			var amount = document.getElementById("caunter").value;
+			
+			datas = {
+				protein_ingredient: protein_ingredient,
+				fatacid_ingredient: fatacid_ingredient,
+				carbo_ingredient: carbo_ingredient,
+				amount: amount,
+			}
+			$.ajax({      
+				url: '{% url "ajax_load_optimization_results" %}',// set the url of the request (= localhost:8000/load-courses/)
+				data: datas,
+				success: function (data) {   // data is the return of the load_courses view function
+				$("#outputoptimization").html(data);  // replace the contents of the course input with the data that came from the server
+				}
+			});
+		});
+
+		function ClickSolution(){
+        var massFraction= [];
+        var price=[];
+        var region = [];
+        var ingredient = [];
+
+        var productName = document.getElementById("product").value;
+        var massFractions = document.getElementsByName("massfraction");
+        var prices = document.getElementsByName("price");
+        var regions = document.getElementsByName("region");
+        var ingredients = document.getElementsByName("ingredients");
+        var counter = document.getElementById("counter").value;
+
+        for(let i = 0; i < regions.length; i++){
+            massFraction.push(massFractions[i].value);
+            price.push(prices[i].value);
+            region.push(regions[i].options[regions[i].selectedIndex].text);
+            ingredient.push(ingredients[i].value);
+        }
+
+        datas = {
+            Regions: JSON.stringify(region),
+            MassFractions: JSON.stringify(massFraction),
+            Prices: JSON.stringify(price),
+            Ingredients: JSON.stringify(ingredient),
+            counters: counter,
+        }
+
+        $.ajax({      
+            url: '{% url "ajax_load_calculation" %}',// set the url of the request (= localhost:8000/load-courses/)
+            data: datas,
+            success: function (data) {   // data is the return of the load_courses view function
+            $("#outputcalculate").html(data);  // replace the contents of the course input with the data that came from the server
+            }
+        });
+    }
+
+	function changeRegion(caller) {
+        var choiceregion = caller.id; // Get Select ID
+        var e = document.getElementById(choiceregion).value; // Get Data by ID Select
+		console.log(caller.id)
+
+       $.ajax({                       // initialize an AJAX request
+         url: '{% url "ajax_load_region" %}',// set the url of the request (= localhost:8000/load-courses/)
+         data: {
+            'regionId': e        // add the programming id to the GET parameters
+         },
+        success: function (data) {   // data is the return of the load_courses view function
+         $("#ingredient").html(data);  // replace the contents of the course input with the data that came from the server
+        }
+       });
+    }
+	</script>
+{% endblock custom_js%}

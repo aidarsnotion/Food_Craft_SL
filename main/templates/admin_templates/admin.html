@@ -1,0 +1,245 @@
+{% extends 'admin_templates/admin_base.html' %}   
+{% load static %}
+
+
+{% block custom_css %}
+{% endblock custom_css %}
+
+
+
+{% block content %}
+
+<!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h1 class="h3 mb-0 text-gray-800 font-weight-bold">Главная страница</h1>
+                        <a href="" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm"><i
+                                class="fas fa-download fa-sm text-white-50"></i> Скачать руководство</a>
+                    </div>
+                    <hr>
+                      
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'Import_Excel_pandas' %}">Импортировать из excel</a> </div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'Import_Excel_pandas' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <!-- Earnings (Monthly) Card Example -->
+                    
+                    <div class="col-xl-3 col-md-6 mb-4">
+                        <div class="card border-left-danger shadow h-100 py-2">
+                            <div class="card-body">
+                                <div class="row no-gutters align-items-center">
+                                    <div class="col mr-2">
+                                        <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                            <a class="collapse-item" href="{% url 'categories_create' %}">Добавить категорию</a> </div>
+                                    </div>
+                                    <div class="col-auto">
+                                        <a class="collapse-item" href="{% url 'categories_create' %}">
+                                            <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                    <!-- Page Heading -->
+                    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+                        <h3 class="h5 mb-0 text-gray-1000">Продукты</h3>
+                    </div>
+
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'products_create' %}">Добавить Продукт</a></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'products_create' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-success shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'fatacids_create' %}">Добавить жирнокислотный состав</a></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'fatacids_create' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-info shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'minerals_create' %}">Добавить минеральный состав</a></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'minerals_create' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-warning shadow h-100 py-2">
+                                <div class="card-body">
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'aminoacids_create' %}">Добавить аминокислотный состав</a></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'aminoacids_create' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Earnings (Monthly) Card Example -->
+                        <div class="col-xl-3 col-md-6 mb-4">
+                            <div class="card border-left-danger shadow h-100 py-2">
+                                <div class="card-body"> 
+                                    <div class="row no-gutters align-items-center">
+                                        <div class="col mr-2">
+                                            <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">
+                                                <a class="collapse-item" href="{% url 'chemicals_create' %}">Добавить химический состав</a></div>
+                                        </div>
+                                        <div class="col-auto">
+                                            <a class="collapse-item" href="{% url 'chemicals_create' %}">
+                                                <i class="fa fa-plus-square fa-2x text-gray-300" aria-hidden="true"></i>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    
+                    
+
+    <!-- Logout Modal-->
+    <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Вы хотите выйти?</h5>
+                    <button class="close-btn" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">x</span>
+                    </button>
+                </div>
+                <div class="modal-body">Нажмите "Выйти" для подтверждения действия</div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" type="button" data-dismiss="modal">Отмена</button>
+                    <a class="btn btn-primary" href="{% url 'logout_page' %}">Выйти</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Import Modal -->
+    <div id="ImportModal" class="modal">
+
+        <!-- Modal content -->
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            {% if message %} 
+                {% for message in message %}
+                    {% if message.tags == "error" %}
+                        <div class="alert alert-danger alert-dismissible" role="alert">{{message}}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                        </div>
+                    {% elif message.tags == "success" %}
+                    <div class="alert alert-success alert-dismissible" role="alert">{{message}}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            {% endif %}
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+             
+                <div class="row">
+                    <div class="col-md-6 col-xs-12">
+                      <div class="x_panel">
+                        <div class="x_title">
+                          <h2>Import Excel Data into Database</h2>           
+                          <div class="clearfix"></div>
+                        </div>
+                        <div class="x_content">
+                          <div class="col-md-8 col-sm-12 col-xs-12 form-group">      
+                          </div>
+                                <input type="file" name="myfile" class="form-control">
+                                         <button type="submit" class="btn btn-success" >Upload data using Pandas</button> 
+                                         <button type="submit" class="btn btn-success" >Upload data using Import_Export_Lib</button>   
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+              </form>   
+        </div>
+    
+    </div>
+
+
+    {% endblock %}
+
+    {% block custom_js %}
+
+    {% endblock custom_js %}

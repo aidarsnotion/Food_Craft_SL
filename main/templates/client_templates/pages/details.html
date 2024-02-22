@@ -1,0 +1,236 @@
+{% extends "client_templates/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Информация о продукте" %}{% endblock page_title%}
+
+{% block content %}
+<body>
+	
+	<!--PreLoader-->
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <!--PreLoader Ends-->
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg homepage-bg-2">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<h1>{{ product_id.attribute_name }}</h1>
+						<p>{{ product_id.types.Category.Region }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+	
+	<!-- DataTable about Product -->
+	<div class="container text-center mt-5 mb-5 d-flex justify-content-center" >
+		<div class="col-lg-12">
+			{% if fatacids %}
+			<h3 class="">{% translate "Жирнокислотный состав" %}</h3>
+			<div class="order-details-wrap">
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>Липид</th>
+							<th>{% translate "Значение" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for value in fatacids %}
+						<tr>
+							<td>{{value.fat_acid}}</td>
+							<td>{{value.value}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+					
+				</table>
+			</div>
+			{% endif %}
+			<h3 class="mt-5 text-gray-800">{% translate "Минеральный состав" %}</h3>
+			<div class="order-details-wrap">
+				<table class="table table-striped table-bordered mb-0">
+					<thead>
+						<tr>
+							<th class="col-lg-2">{% translate "Ca (Кальций)" %}</th>
+							<th class="col-lg-2">{% translate "Na (Натрий)" %}</th>
+							<th class="col-lg-2">{% translate "K (Калий)" %}</th>
+							<th class="col-lg-2">{% translate "P (Фосфор)" %}</th>
+							<th class="col-lg-2">{% translate "Mn (Марганец)" %}</th>
+							<th class="col-lg-2">{% translate "Zn (Цинк)" %}</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{mineracomp.Ca}}</td>
+							<td>{{mineracomp.Na}}</td>
+							<td>{{mineracomp.K}}</td>
+							<td>{{mineracomp.P}}</td>
+							<td>{{mineracomp.Mn}}</td>
+							<td>{{mineracomp.Zn}}</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-striped table-bordered mb-0">
+					<thead>
+						<tr>
+							<th class="col-lg-2">{% translate "Se (Скандий)" %}</th>
+							<th class="col-lg-2">{% translate "Cu (Медь)" %}</th>
+							<th class="col-lg-2">{% translate "Fe (Железо)" %}</th>
+							<th class="col-lg-2">{% translate "I (Йод)" %}</th>
+							<th class="col-lg-2">{% translate "B (Бор)" %}</th>
+							<th class="col-lg-2">{% translate "Li (Литий)" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{mineracomp.Se}}</td>
+							<td>{{mineracomp.Cu}}</td>
+							<td>{{mineracomp.Fe}}</td>	
+							<td>{{mineracomp.I}}</td>
+							<td>{{mineracomp.B}}</td>
+							<td>{{mineracomp.Li}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>{% translate "Al (Алюминий)" %}</th>
+							<th>{% translate "Mg (Магний)" %}</th>
+							<th>{% translate "V (Ванадий)" %}</th>
+							<th>{% translate "Ni (Нитрий)" %}</th>
+							<th>{% translate "Co (Ковальт)" %}</th>
+							<th>{% translate "Cr (Хром)" %}</th>
+							<th>{% translate "Sn (Олово)" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{mineracomp.Al}}</td>
+							<td>{{mineracomp.Mg}}</td>
+							<td>{{mineracomp.V}}</td>
+							<td>{{mineracomp.Ni}}</td>
+							<td>{{mineracomp.Co}}</td>
+							<td>{{mineracomp.Cr}}</td>
+							<td>{{mineracomp.Sn}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			{% if amoinacids == None %}
+			{% else %}
+			<h3 class="mt-5">{% translate "Аминокислотный состав" %}</h3>
+			<div class="order-details-wrap">
+				<table class="table table-striped table-bordered mb-0">
+					<thead>
+						<tr>
+							<th class="col-lg-2">{% translate "Аспарагиновая кислота" %}</th>
+							<th class="col-lg-2">{% translate "Глутаминовая кислота" %}</th>
+							<th class="col-lg-2">{% translate "Серин" %}</th>
+							<th class="col-lg-2">{% translate "Гистидин" %}</th>
+							<th class="col-lg-2">{% translate "Глицин" %}</th>
+							<th class="col-lg-2">{% translate "Треонин" %}</th>
+							
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{amoinacids.asparing}}</td>
+							<td>{{amoinacids.glutamin}}</td>
+							<td>{{amoinacids.serin}}</td>
+							<td>{{amoinacids.gistidin}}</td>
+							<td>{{amoinacids.glitsin}}</td>
+							<td>{{amoinacids.treonin}}</td>
+							
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-striped table-bordered mb-0">
+					<thead>
+						<tr>
+							<th class="col-lg-2">{% translate "Аргинин" %}</th>
+							<th class="col-lg-2">{% translate "Аланин" %}</th>
+							<th class="col-lg-2">{% translate "Тирозин" %}</th>
+							<th class="col-lg-2">{% translate "Цистеин" %}</th>
+							<th class="col-lg-2">{% translate "Валин" %}</th>
+							<th class="col-lg-2">{% translate "Метионин" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{amoinacids.arginin}}</td>
+							<td>{{amoinacids.alanin}}</td>
+							<td>{{amoinacids.tirosin}}</td>	
+							<td>{{amoinacids.tsistein}}</td>
+							<td>{{amoinacids.valin}}</td>
+							<td>{{amoinacids.metionin}}</td>
+						</tr>
+					</tbody>
+				</table>
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th class="col-lg-2">{% translate "Триптофан" %}</th>
+							<th class="col-lg-2">{% translate "Фенилаланин" %}</th>
+							<th class="col-lg-2">{% translate "Изолейцин" %}</th>
+							<th class="col-lg-2">{% translate "Лейцин" %}</th>
+							<th class="col-lg-2">{% translate "Лизин" %}</th>
+							<th class="col-lg-2">{% translate "Пролин" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>{{amoinacids.triptofan}}</td>
+							<td>{{amoinacids.fenilalalin}}</td>
+							<td>{{amoinacids.izoleitsin}}</td>
+							<td>{{amoinacids.leitsin}}</td>
+							<td>{{amoinacids.lisin}}</td>
+							<td>{{amoinacids.prolin}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			{% endif %}
+			<h3 class="mt-5">{% translate "Химический состав" %}</h3>
+			<div class="order-details-wrap">
+				<table class="table table-striped table-bordered">
+					<thead>
+						<tr>
+							<th>{% translate "Массовая доля растворимых сухих веществ, %" %}</th>
+							<th>{% translate "Массовая доля аскорбиновой кислоты, г/дм3" %}</th>
+							<th>{% translate "Зольность, %" %}</th>
+							<th>{% translate "Массовая доля влаги, %" %}</th>
+							<th>{% translate "Массовая доля белка, %" %}</th>
+							<th>{% translate "Массовая доля жира, %" %}</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for value in chemicals %}
+						<tr>
+							<td>{{value.soluable_solids}}</td>
+							<td>{{value.ascorbic_acids}}</td>
+							<td>{{value.ash_content}}</td>
+							<td>{{value.moisture}}</td>
+							<td>{{value.protein}}</td>
+							<td>{{value.fat}}</td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<!-- End DataTable about Product -->
+
+{% endblock content %}

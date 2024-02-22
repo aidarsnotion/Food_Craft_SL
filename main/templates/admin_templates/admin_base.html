@@ -1,0 +1,64 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+{% if user.user_type == "1" %}
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>{% block admin_title %}Панель администратора{% endblock admin_title %}</title>
+
+    
+    <!-- container-scroller -->
+    {% include 'admin_templates/pages/blocks/links.html' %}
+    <link rel="stylesheet" href=" {% static 'admin-panel/css/sb-admin-2.min.css' %} ">
+    
+    {% block custom_css %}   
+    
+    
+    {% endblock custom_css %}
+
+  </head>
+  <body id="page-top">
+    
+    <div class="container-scroller">
+      
+      <!-- Page Wrapper -->
+<div id="wrapper">
+  {% include 'admin_templates/pages/blocks/side-bar.html' %}
+
+  <!-- Content Wrapper -->
+  <div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+      {% include 'admin_templates/pages/blocks/header.html' %}
+  
+  <!-- Begin Page Content -->
+  <div class="container-fluid">
+      
+      <!-- ======= Block Content ======= -->
+      {% block content %} {% endblock content %}
+      <!-- End Block Content -->
+    </div>
+  </div>
+       {% include 'admin_templates/pages/blocks/footer.html' %}
+    <!-- main-panel ends -->
+    
+  </div>
+  <!-- page-body-wrapper ends -->
+</div>
+</div>
+    <!-- container-scroller -->
+    {% include 'admin_templates/pages/blocks/scripts.html' %}
+    
+    {% block custom_js %}{% endblock custom_js %}
+
+{% else %}
+
+<script>window.location.replace("{% url 'staff_home' %}");</script>
+
+{% endif %}
+
+  </body>
+</html>

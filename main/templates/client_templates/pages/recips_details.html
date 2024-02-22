@@ -1,0 +1,139 @@
+{% extends "client_templates/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block page_title %}{% translate "Информация о продукте" %}{% endblock page_title%}
+
+{% block content %}
+<body>
+	
+	<!--PreLoader-->
+    <div class="loader">
+        <div class="loader-inner">
+            <div class="circle"></div>
+        </div>
+    </div>
+    <!--PreLoader Ends-->
+	
+	<!-- breadcrumb-section -->
+	<div class="breadcrumb-section breadcrumb-bg homepage-bg-2">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-8 offset-lg-2 text-center">
+					<div class="breadcrumb-text">
+						<h1>{{ product_id.name }}</h1>
+						<p>{{ product_id.date_analis }}</p>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end breadcrumb section -->
+	<div class="container text-center mt-5 mb-5 d-flex justify-content-center" >
+		<div class="col-lg-12">
+	<!-- DataTable about Recip -->
+<div class="wrapper print-to-pdf">
+	</div>
+	<div class="row">
+		<div class="col-lg-8">
+			<div class="card-title bg-custom border p-1">
+				<h3>{% translate "Содержание основных компонентов" %}</h3>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered" id="tblToExcl1">
+					<tr>
+						<th>{% translate "Содержание белка %" %}</th>
+						<th>{% translate "Содержание жира %" %}</th>
+						<th>{% translate "Содержание углеводов %" %}</th>
+					</tr>
+					<tr>
+						<td>{{ chemicals.protein|truncatechars_html:5 }}</td>
+						<td>{{ chemicals.fat|truncatechars_html:5 }}</td>
+						<td>{{ chemicals.carbohydrates|truncatechars_html:5 }}</td>
+
+					</tr>
+				</table>
+			</div>
+		</div>
+		<div class="col-lg-4">
+			<div class="card-title bg-custom border p-1">
+				<h3>{% translate "Себестоимость" %}</h3>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered" id="tblToExcl2">
+					<tr>
+						<th>{% translate "Себестоимость за 100 г." %}</th>
+						<th>{% translate "Себестоимость за 1кг." %}</th>
+					</tr>
+					<tr>
+						<td>{{ product_id.cost_price_100gramm|truncatechars_html:7 }}</td>
+						<td>{{ product_id.cost_price_1kg|truncatechars_html:7 }}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		{% if user.user_type == "3" %}
+		<div class="col-lg-12">
+			<div class="card-title bg-custom border p-1 text-center">
+				<h3>{% translate "Содержание НАК и их скор" %}</h3>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-bordered" id="tblToExcl3">
+					<tr>
+						<th></th>
+						<th>{% translate "Изолейц" %}</th>
+						<th>{% translate "Лейц" %}</th>
+						<th>{% translate "Валин" %}</th>
+						<th>{% translate "Мет+Цист" %}</th>
+						<th>{% translate "Фен+Тир" %}</th>
+						<th>{% translate "Триптофан" %}</th>
+						<th>{% translate "Треон" %}</th>
+						<th>{% translate "Лизин" %}</th>
+					</tr>
+					<tr>
+						<th style="background-color: #99ccff;">М, %</th>
+						<td>{{amoinacids.izoleitsin|truncatechars_html:7}}</td>
+						<td>{{amoinacids.leitsin|truncatechars_html:7}}</td>
+						<td>{{amoinacids.valin|truncatechars_html:7}}</td>
+						<td>{{amoinacids.metilcistein|truncatechars_html:7}}</td>
+						<td>{{amoinacids.feniltirosin|truncatechars_html:7}}</td>
+						<td>{{amoinacids.triptofan|truncatechars_html:7}}</td>
+						<td>{{amoinacids.treon|truncatechars_html:7}}</td>
+						<td>{{amoinacids.lisin|truncatechars_html:7}}</td>
+					</tr>
+
+					<tr>
+						<th style="background-color: #cc99ff;">C, %</th>
+						<td>{{amoinacids.izoleitsin1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.leitsin1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.valin1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.metilcistein1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.feniltirosin1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.triptofan1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.treon1|truncatechars_html:7}}</td>
+						<td>{{amoinacids.lisin1|truncatechars_html:7}}</td>
+					</tr>
+					<tr>
+						<th style="background-color: #ffff99;">a, %</th>
+						<td>{{amoinacids.izoleitsin_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.leitsin_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.valin_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.metilcistein_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.feniltirosin_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.triptofan_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.treon_a|truncatechars_html:7}}</td>
+						<td>{{amoinacids.lisin_a|truncatechars_html:7}}</td>
+					</tr>
+					<tr>
+						<th style="background-color: #ff99cc;">Cmin</th>
+						<td class="font-weight-bold">{{amoinacids.c_min|truncatechars_html:7}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		{% endif %}
+
+	<!-- end DataTable about Recip -->
+</div></div></div>
+
+{% endblock content %}

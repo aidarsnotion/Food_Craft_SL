@@ -1,0 +1,266 @@
+{% extends 'client_templates/base.html' %}
+{% load static %}
+{% load i18n %}
+
+{% block page_title %}Калькулятор для расчета массовой доли жира{% endblock page_title%}
+
+{% block content %}
+
+{% if user.is_authenticated%}
+<style>
+	#ingredients-wrapper {
+		position: relative;
+	}
+
+	.btn-calculate {
+		background-color: #F28123;
+		color: #fff;
+		font-weight: bold;
+	}
+
+	.btn-calculate:hover {
+		background-color: #ff7f16;
+		color: #fff;
+	}
+
+	.btn-add {
+		background-color: #374b56;
+		color: #fff;
+		font-weight: bold;
+	}
+
+	.btn-add:hover {
+		background-color: #06374f;
+		color: #fff;
+	}
+
+	.btn-wrapper {
+		z-index: 5;
+		position: absolute;
+		right: 0;
+	}
+
+	.control-btns {
+		width: 50px;
+		cursor: pointer;
+	}
+
+	.delete-btn .fa-times {
+		font-size: 22px;
+		color: red;
+	}
+
+	.control-btns:hover .fa-times {
+		color: #F28123;
+		transition: .5s;
+
+	}
+
+	.bg-custom {
+		background-color: rgba(0, 0, 0, .05);
+	}
+
+	.card-title h3 {
+		text-align: center;
+		font-size: 18px;
+		font-family: Open Sans, sans-serif;
+	}
+
+	select.form-control {
+		margin-bottom: 15px;
+	}
+
+	.ing-num-wrapper {
+		position: absolute;
+		top: 0;
+		right: 0;
+	}
+
+	.ing-num {
+		font-weight: bolder;
+		color: rgba(0, 0, 0, .2);
+	}
+
+	@media print {
+		.no-print{
+			display: none;
+		}
+		.chart-print{
+			width: 100%;
+		}
+	}
+</style>
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg homepage-bg-3">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="breadcrumb-text">
+					<p>{% translate "Калькулятор для расчета массовой доли жира" %}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end breadcrumb section -->
+
+
+<!-- cart -->
+<div class="cart-section mt-100 mb-80">
+	<div class="container">
+		<div class="card-title  mt-5">
+			{% if error_message %}
+			<div class="alert alert-danger alert-dismissible" role="alert">{{error_message}}
+				<button type="button" class="close" data-dismiss="alert" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			{% endif %}
+		</div>
+
+		<div class="container">
+			<form id="get-form" method="GET">
+				{% csrf_token %}
+                    <div class="row">
+                        <div class="form-outline d-flex">
+                            <input type="text" id="product_name" name="product_name" class="form-control" required/>
+                            <label class="form-label font-weight-bold ml-4" for="product_name">{% translate "Исследуемый продукт" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-outline d-flex">
+                            <input type="number" id="m_b_1" name="m_b_1" class="form-control" required/>
+                            <label class="form-label font-weight-bold ml-4" for="m_b_1">{% translate "Масса бюкса, г" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-outline d-flex">
+                            <input type="number" id="m_b_before" name="m_b_before" class="form-control" required/>
+                            <label class="form-label font-weight-bold ml-4" for="m_b_before">{% translate "Масса навески с бюксой до высушивания, г" %}</label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-outline d-flex">
+                            <input type="number" id="m_b_after" name="m_b_after" class="form-control" required/>
+                            <label class="form-label font-weight-bold ml-4" for="m_b_after">{% translate "Масса навески с бюксой после высушивания, г" %}</label>
+                        </div>
+                    </div>
+		</div>
+
+		<hr>
+		<!-- Submit button -->
+		<button type="button" class="btn btn-calculate btn-block mb-1" onclick="ClickSolution_fat();">{% translate "Вычислить" %}</button>
+		</form>
+        <hr>
+        <h4 class="text-center"><small>Результаты вычисления будут записаны в Таблице №1: Массовая доля жира</small></h4>
+
+	</div>
+
+</div>
+
+<div class="container" id="output">
+
+</div>
+
+{% else %}
+
+<!-- breadcrumb-section -->
+<div class="breadcrumb-section breadcrumb-bg homepage-bg-3">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="breadcrumb-text">
+					<p>{% translate "Калькулятор рецептуры пищевых продуктов" %}</p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<!-- end breadcrumb section -->
+
+<!-- product section -->
+<div class="product-section mt-150 mb-150">
+	<div class="container">
+		<div class="row">
+			<div class="col-lg-8 offset-lg-2 text-center">
+				<div class="section-title">	
+					<h3>Прайс-лист <span class="orange-text">калькулятора</span></h3>
+					<p>Чтобы получить доступ вы должны войти в систему, а если у вас нет аккаунта, то отправьте нам заявку</p>
+				</div>
+			</div>
+		</div>
+
+		<div class="row">
+			<div class="col-lg-4 col-md-6 text-center">
+				<div class="single-product-item">
+					<div class="product-image">
+						<a href="{% url 'contact' %}"><img src="assets/img/products/product-img-1.jpg" alt=""></a>
+					</div>
+					<h3>Цена за 1 месяц</h3>
+					<p class="product-price"><span>доступ за</span> 25$ </p>
+					<a href="{% url 'contact' %}" class="cart-btn"> Оставить заявку</a>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6 text-center">
+				<div class="single-product-item">
+					<div class="product-image">
+						<a href="{% url 'contact' %}"><img src="assets/img/products/product-img-2.jpg" alt=""></a>
+					</div>
+					<h3>Цена за 3 месяца</h3>
+					<p class="product-price"><span>доступ за</span> 60$ </p>
+					<a href="{% url 'contact' %}" class="cart-btn"> Оставить заявку</a>
+				</div>
+			</div>
+			<div class="col-lg-4 col-md-6 offset-md-3 offset-lg-0 text-center">
+				<div class="single-product-item">
+					<div class="product-image">
+						<a href="{% url 'contact' %}"><img src="assets/img/products/product-img-3.jpg" alt=""></a>
+					</div>
+					<h3>Цена за год</h3>
+					<p class="product-price"><span>доступ за</span> 280$ </p>
+					<a href="{% url 'contact' %}" class="cart-btn"> Оставить заявку</a>
+				</div>
+			</div>
+				<a href="{% url 'login' %}" class="cart-btn m-auto"> Войти</a>
+		</div>
+	</div>
+</div>
+<!-- end product section -->
+
+
+
+{% endif %}
+
+{% endblock content %}
+
+{% block custom_js %}
+<script src="{% static 'client/js/main.js' %}"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+
+<script>
+    function ClickSolution_fat(){
+
+        var product_name = document.getElementById("product_name").value;
+        var mass_of_bottles = document.getElementById("m_b_1").value;
+        var mass_of_bottles_before = document.getElementById("m_b_before").value;
+        var mass_of_bottles_after = document.getElementById("m_b_after").value;
+
+        datas = {
+            product_name: JSON.stringify(product_name),
+            mass_of_bottles: JSON.stringify(mass_of_bottles),
+            mass_of_bottles_before: JSON.stringify(mass_of_bottles_before),
+            mass_of_bottles_after: JSON.stringify(mass_of_bottles_after),
+        }
+
+        $.ajax({      
+            url: '{% url "load-fat-calculate" %}',
+            data: datas,
+            success: function(data) {
+                console.log(data)
+                $("#output").html(data);
+            }
+        });
+    }
+</script>
+
+{% endblock custom_js %}

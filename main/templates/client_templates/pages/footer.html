@@ -1,0 +1,71 @@
+{% load static %}
+{% load i18n %}
+
+<!-- footer -->
+<div class="footer-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box about-widget">
+                    <h2 class="widget-title">{% translate 'О нас' %}</h2>
+                    <p>{% translate "Миссия КГТУ им. И.Раззакова - совершенствование и развитие качественного технического образования, на основе достижений науки, техники, технологий, научных исследований и интеграции в мировое образовательное пространство, направленное на  инновационное развитие Кыргызской Республики,  посредством реализации конкурентоспособных образовательных программ в соответствии с потребностями рынка труда, общества, экономики и государства." %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box get-in-touch">
+                    <h2 class="widget-title">{% translate "Контакты" %}</h2>
+                    <ul>
+                        <li>{% translate "Адрес: Кыргызстан, г.Бишкек, пр.Ч.Айтматова, 66. Индекс: 720044" %}</li>
+                        <li><a href="mailto:rector@kstu.kg">rector@kstu.kg</a></li>
+                        <li>+996 312 62 37 90</li>
+                        <li>+996 312 66 13 67</li>
+                        <li>+996 312 62 57 85</li>
+                        <li>{% translate "Прием. рект: +996 312 54 51 25" %}</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box pages">
+                    <h2 class="widget-title">{% translate "Страницы" %}</h2>
+                    <ul>
+                        <li><a href="{% url 'client_home' %}">{% translate "Главная" %}</a></li>
+                        <li><a href="{% url 'about-us' %}">{% translate "О нас" %}</a></li>
+                        <li><a href="{% url 'meels' %}">{% translate "Рассчитать рецептуру" %}</a></li>
+                        <li><a href="{% url 'contact' %}">{% translate "Свяжитесь с нами" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box subscribe">
+                    <h2 class="widget-title">{% translate "Подпишитесь" %}</h2>
+                    <p>{% translate "На нашу рассылку, чтобы получать последние обновления." %}</p>
+                    <form action="index.html">
+                        <input type="email" placeholder="Почта">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end footer -->
+
+<!-- copyright -->
+<div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <p>Copyrights &copy; 2023 - <a href="mailto:Aidar.ernisov01@gmail.com">KAA</a></p>
+            </div>
+            <div class="col-lg-6 text-right col-md-12">
+                <div class="social-icons">
+                    <ul>
+                        <li><a href="https://www.instagram.com/aidarsnotion/?hl=ru" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="https://www.linkedin.com/in/ernisov/" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end copyright -->

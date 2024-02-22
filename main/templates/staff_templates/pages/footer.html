@@ -1,0 +1,73 @@
+{% load static %}
+{% load i18n %}
+
+<!-- footer -->
+<div class="footer-area">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box about-widget">
+                    <h2 class="widget-title">О нас</h2>
+                    <p>{% translate "БЦИСиМ это территориальное подразделение Центра по стандартизации и метрологии при Министерстве экономики и коммерции Кыргызской Республики." %}</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box get-in-touch">
+                    <h2 class="widget-title">{% translate "Контакты" %}</h2>
+                    <ul>
+                        <li>{% translate "Адрес: г. Бишкек ул. Панфилова, 197 Индекс: 720040" %}</li>
+                        <li><a href="mailto:nism@nism.gov.kg">nism@nism.gov.kg</a></li>
+                        <li>+996 312 62 37 90</li>
+                        <li>+996 312 66 13 67</li>
+                        <li>+996 312 62 57 85</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box pages">
+                    <h2 class="widget-title">{% translate "Страницы" %}</h2>
+                    <ul>
+                        <li><a href="{% url 'client_home' %}">{% translate "Главная" %}</a></li>
+                        <li><a href="{% url 'about-us' %}">{% translate "О нас" %}</a></li>
+                        <li><a href="{% url 'meels' %}">{% translate "Проектирование пищевых продуктов" %}</a></li>
+                        <li><a href="{% url 'contact' %}">{% translate "Свяжитесь с нами" %}</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-box subscribe">
+                    <h2 class="widget-title">{% translate "Подпишитесь" %}</h2>
+                    <p>{% translate "На нашу рассылку, чтобы получать последние обновления." %}</p>
+                    <form action="index.html">
+                        <input type="email" placeholder="Почта">
+                        <button type="submit"><i class="fas fa-paper-plane"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end footer -->
+
+<!-- copyright -->
+<div class="copyright">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-6 col-md-12">
+                <p>Copyrights &copy; 2023 - <a href="">KAA</a></p>
+            </div>
+            <div class="col-lg-6 text-right col-md-12">
+                <div class="social-icons">
+                    <ul>
+                        <li><a href="#" target="_blank"><i class="fab fa-facebook-f"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-twitter"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-instagram"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-linkedin"></i></a></li>
+                        <li><a href="#" target="_blank"><i class="fab fa-dribbble"></i></a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- end copyright -->
