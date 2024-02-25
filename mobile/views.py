@@ -112,25 +112,19 @@ class ProductDetail_APIView(APIView):
         )},
         manual_parameters=[
             openapi.Parameter('id', openapi.IN_QUERY, description="ID продукта", type=openapi.TYPE_INTEGER),
-            openapi.Parameter('language', openapi.IN_QUERY, description="Язык продукта", type=openapi.TYPE_STRING),
-            openapi.Parameter('page', openapi.IN_QUERY, description="Номер страницы", type=openapi.TYPE_STRING),
         ]
     )
         
     def get(self, request, *args, **kwargs):
         product_id = request.query_params.get('id')
-        language = request.query_params.get('language')
 
-        fil_data = namedtuple('filter_data', 'id language')
-        fl_data = fil_data(product_id, language)
+        fil_data = namedtuple('filter_data', 'id')
+        fl_data = fil_data(product_id)
 
         queryset = filter_data(self.queryset, fl_data, request)
 
-        paginator = self.pagination_class()
-        paginated_queryset = paginator.paginate_queryset(queryset, request)
-
-        serializer = self.serializer_class(paginated_queryset, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
 
 
 
