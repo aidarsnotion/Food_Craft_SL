@@ -85,27 +85,27 @@ class CategorySerializer(serializers.ModelSerializer):
 class ProductsSerializer(serializers.ModelSerializer):
     """   Продукты питания  """
     Category = CategorySerializer()
+    category_name = serializers.CharField(source='Category.Name_of_category')
+    Region = serializers.CharField(source='Category.Region.region')
 
     class Meta:
         model = Products
         fields = ['id', 
                   'attribute_name', 
-                  'Category', 
-                  'date_analis', 
-                  'language']
+                  'category_name', 
+                  'Region',
+                  'date_analis',]
         
 
 class ChemicalsSerializer(serializers.ModelSerializer):
     """   Химический состав продуктов питания  """
-    product_id = serializers.SerializerMethodField()
-    product_name = serializers.SerializerMethodField()
-    language = serializers.SerializerMethodField()
+    # product_id = serializers.SerializerMethodField()
+    # product_name = serializers.SerializerMethodField()
+    # language = serializers.SerializerMethodField()
 
     class Meta:
         model = Chemicals
-        fields = ['id',
-                  'product_id',
-                  'product_name',
+        fields = [
                   'soluable_solids',
                   'ascorbic_acids',
                   'ash_content',
@@ -113,25 +113,23 @@ class ChemicalsSerializer(serializers.ModelSerializer):
                   'protein',
                   'fat',
                   'carbohydrates',
-                  'language',
                   ]
     
-    def get_product_id(self, obj):
-        return obj.product.id if obj.product else None
+    # def get_product_id(self, obj):
+    #     return obj.product.id if obj.product else None
 
-    def get_product_name(self, obj):
-        return obj.product.attribute_name if obj.product else None
+    # def get_product_name(self, obj):
+    #     return obj.product.attribute_name if obj.product else None
 
-    def get_language(self, obj):
-        return obj.product.language if obj.product else None
+    # def get_language(self, obj):
+    #     return obj.product.language if obj.product else None
         
 class FatacidsTypesSerilizer(serializers.ModelSerializer):
     """   Вид жирнокислоты (Насыщенный, Мононенасыщенный)  """
     class Meta:
         model = FatAcidsType
         fields = ['id',
-                  'name',
-                  'language',]
+                  'name',]
 
 class FatAcidsSerializer(serializers.ModelSerializer):
     class Meta:
@@ -141,35 +139,30 @@ class FatAcidsSerializer(serializers.ModelSerializer):
         
 class FatacidCompositionSerializer(serializers.ModelSerializer):
     """   Жирнокислотный состав продуктов питания  """
-    product_id = serializers.IntegerField(source='product.id')
-    product_name = serializers.CharField(source='product.attribute_name')
-    language = serializers.CharField(source='product.language')
+    # product_id = serializers.IntegerField(source='product.id')
+    # product_name = serializers.CharField(source='product.attribute_name')
+    # language = serializers.CharField(source='product.language')
     fat_acid_types = serializers.CharField(source='types.name')
     lipid_name = serializers.CharField(source='fat_acid.name')
 
     class Meta:
         model = FatAcidCompositionOfMeal
-        fields = ['id',
-                  'product_id',
-                  'product_name',
+        fields = [
                   'fat_acid_types',
                   'lipid_name',
                   'value',
-                  'language',
                   ]
         
 
 class AminoAcidCompositionSerializer(serializers.ModelSerializer):
     """   Аминокислотный состав продуктов питания  """
-    product_id = serializers.IntegerField(source='product.id')
-    product_name = serializers.CharField(source='product.attribute_name')
-    language = serializers.CharField(source='product.language')
+    # product_id = serializers.IntegerField(source='product.id')
+    # product_name = serializers.CharField(source='product.attribute_name')
+    # language = serializers.CharField(source='product.language')
 
     class Meta:
         model = AminoAcidComposition
-        fields = ['id',
-                  'product_id',
-                  'product_name',
+        fields = [
                   'asparing',
                   'glutamin',
                   'serin',
@@ -188,20 +181,17 @@ class AminoAcidCompositionSerializer(serializers.ModelSerializer):
                   'leitsin',
                   'lisin',
                   'prolin',
-                  'language',
                   ]
         
 class MineralCompositionSerializer(serializers.ModelSerializer):
     """   Минеральный состав продуктов питания  """
-    product_id = serializers.IntegerField(source='product.id')
-    product_name = serializers.CharField(source='product.attribute_name')
-    language = serializers.CharField(source='product.language')
+    # product_id = serializers.IntegerField(source='product.id')
+    # product_name = serializers.CharField(source='product.attribute_name')
+    # language = serializers.CharField(source='product.language')
 
     class Meta:
         model = MineralComposition
-        fields = ['id',
-                  'product_id',
-                  'product_name',
+        fields = [
                   'Ca',
                   'Na',
                   'K',
@@ -221,8 +211,9 @@ class MineralCompositionSerializer(serializers.ModelSerializer):
                   'Co',
                   'Cr',
                   'Sn',
-                  'language',
                   ]
+
+
         
 class ProcessRecipeSerializer(serializers.Serializer):
     recip_name = serializers.CharField()
@@ -231,6 +222,7 @@ class ProcessRecipeSerializer(serializers.Serializer):
     mass_fraction = serializers.ListField(child=serializers.IntegerField())
     price = serializers.ListField(child=serializers.IntegerField())
     size = serializers.IntegerField()
+
 
 class CalculationResultsSerializer(serializers.Serializer):
     protein = serializers.FloatField()
@@ -274,3 +266,25 @@ class CalculationResultsSerializer(serializers.Serializer):
     chart_bc = serializers.CharField()
     chart_U = serializers.CharField()
     chart_G = serializers.CharField()
+
+
+class DetailedProductSerializer(serializers.ModelSerializer):
+    chemicals = ChemicalsSerializer(many=True, read_only=True)
+    aminoacids = AminoAcidCompositionSerializer(many=True, read_only=True)
+    fatacids = FatacidCompositionSerializer(many=True, read_only=True)
+    minerals = MineralCompositionSerializer(many=True, read_only=True)
+    category_name = serializers.CharField(source='Category.Name_of_category')
+    Region = serializers.CharField(source='Category.Region.region')
+
+    class Meta:
+        model = Products
+        fields = ['id', 
+                  'attribute_name', 
+                  'category_name', 
+                  'Region',
+                  'date_analis',
+                  'chemicals',
+                  'aminoacids',
+                  'fatacids',
+                  'minerals',
+                  ]

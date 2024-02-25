@@ -1,0 +1,3 @@
+postgres=# CREATE DATABASE myproject;
+CREATE DATABASE
+postgres=# CREATE USER myprojectuser WITH PASSWORD 'Csmbishkek2023';

@@ -1,7 +1,8 @@
 from django.contrib.auth.models import Group
-from main.models import CustomUser
+from django.contrib.auth.models import User
 from rest_framework import permissions, viewsets
 from django.shortcuts import render
+from rest_framework.authentication import TokenAuthentication
 from main.models import *
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -21,6 +22,14 @@ from main.Calculation_Recip import process_recipe
 from rest_framework.permissions import AllowAny
 from mobile.serializers import *  
 from rest_framework import views 
+from .models import APIKey
+from main.forms import UserPasswordResetForm
+from django.template.loader import render_to_string
+from django.utils.http import urlsafe_base64_encode
+from django.utils.encoding import force_bytes
+from django.contrib.auth.tokens import default_token_generator
+from django.core.mail import send_mail, BadHeaderError
+
 
 
 def filter_data(queryset, filter_d, request=None):
@@ -45,38 +54,84 @@ def filter_data(queryset, filter_d, request=None):
         queryset = queryset.model.objects.all()
     
     return queryset
+    
+
+class LoginUserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+    password = serializers.CharField()
 
 
+class LoginAPIView(APIView):
+    serializer_class = LoginUserSerializer
+    @swagger_auto_schema(
+        request_body=LoginUserSerializer,
+        responses={
+            200: CalculationResultsSerializer,
+            400: "Error message"
+        },
+    )
+    def post(self, request):
+        serializer = self.serializer_class(data=request.data)
+        # Получаем данные запроса
+        if serializer.is_valid():
+            username = serializer.validated_data.get('username')
+            password = serializer.validated_data.get('password')
 
-class LoginView(views.APIView):
-    # This view should be accessible also for unauthenticated users.
-    permission_classes = (permissions.AllowAny,)
+            # Проверяем, что оба поля заполнены
+            if not username or not password:
+                return Response({'error': 'Both username and password are required'}, status=status.HTTP_400_BAD_REQUEST)
 
-    def post(self, request, format=None):
-        serializer = LoginSerializer(data=self.request.data, context={ 'request': self.request }) 
-        serializer.is_valid(raise_exception=True) 
-        user = serializer.validated_data['user']
-        login(request, user)
-        return Response(None, status=status.HTTP_202_ACCEPTED)
+            # Аутентификация пользователя
+            user = authenticate(username=username, password=password)
+
+            # Проверяем успешность аутентификации
+            if user is None:
+                return Response({'error': 'Invalid username or password'}, status=status.HTTP_401_UNAUTHORIZED)
+
+            # Проверяем, существует ли API ключ для данного пользователя
+            api_key, created = APIKey.objects.get_or_create(user=user)
+            print("API Key created:", api_key.key)
+            print("Authenticated user:", user)
+            #APIKey.objects.all().delete()
+            # Возвращаем успешный ответ с данными пользователя и API ключом
+            return Response({'username': user.username, 'api_key': api_key.key}, status=status.HTTP_200_OK)
+
+
+class ProductDetail_APIView(APIView):
+    """
+    API Детальной информации о продукте питания
+    """
+    queryset = Products.objects.all()
+    serializer_class = DetailedProductSerializer
+    permission_classes = [AllowAny]
+    pagination_class = PageNumberPagination
+
+    @swagger_auto_schema(
+        responses={200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+        )},
+        manual_parameters=[
+            openapi.Parameter('id', openapi.IN_QUERY, description="ID продукта", type=openapi.TYPE_INTEGER),
+            openapi.Parameter('language', openapi.IN_QUERY, description="Язык продукта", type=openapi.TYPE_STRING),
+            openapi.Parameter('page', openapi.IN_QUERY, description="Номер страницы", type=openapi.TYPE_STRING),
+        ]
+    )
         
+    def get(self, request, *args, **kwargs):
+        product_id = request.query_params.get('id')
+        language = request.query_params.get('language')
 
+        fil_data = namedtuple('filter_data', 'id language')
+        fl_data = fil_data(product_id, language)
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = CustomUser.objects.all().order_by('-date_joined')
-    serializer_class = UserSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        queryset = filter_data(self.queryset, fl_data, request)
 
+        paginator = self.pagination_class()
+        paginated_queryset = paginator.paginate_queryset(queryset, request)
 
-class GroupViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows groups to be viewed or edited.
-    """
-    queryset = Group.objects.all()
-    serializer_class = GroupSerializer
-    permission_classes = [permissions.IsAuthenticated]
+        serializer = self.serializer_class(paginated_queryset, many=True)
+        return paginator.get_paginated_response(serializer.data)
+
 
 
 class ProductsList_APIViewSet(APIView):
@@ -396,6 +451,7 @@ class ProcessRecipeSerializer(serializers.Serializer):
 
 
 class ProcessRecipeAPIView(APIView):
+    #authentication_classes = [TokenAuthentication]
     permission_classes = [permissions.IsAuthenticated]
 
     @swagger_auto_schema(
@@ -421,10 +477,50 @@ class ProcessRecipeAPIView(APIView):
             if isinstance(calculation_results, list):
                 return Response({'error': calculation_results[0]}, status=400)
 
-            print(calculation_results)
             serializer_results = CalculationResultsSerializer(calculation_results)
 
             return Response(serializer_results.data, status=status.HTTP_200_OK)
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        
+
+class PasswordResetRequestAPIView(APIView):
+    @swagger_auto_schema(
+        request_body=openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+            required=['email'],
+            properties={
+                'email': openapi.Schema(type=openapi.TYPE_STRING)
+            }
+        ),
+        responses={
+            200: "Success",
+            400: "Error: Invalid email or header"
+        }
+    )
+    def post(self, request):
+        password_reset_form = UserPasswordResetForm(request.data)
+        if password_reset_form.is_valid():
+            data = password_reset_form.cleaned_data['email']
+            associated_users = CustomUser.objects.filter(email=data)
+            if associated_users.exists():
+                for user in associated_users:
+                    subject = "Запрос на сброс данных"
+                    email_template_name = "admin_templates/pages/user/password_reset_email.html"
+                    c = {
+                        "email": user.email,
+                        'domain': 'http://127.0.0.1:8000',
+                        'site_name': 'Website',
+                        "uid": urlsafe_base64_encode(force_bytes(user.pk)),
+                        "user": user,
+                        'token': default_token_generator.make_token(user),
+                        'protocol': 'http',
+                    }
+                    email = render_to_string(email_template_name, c)
+                    try:
+                        send_mail(subject, email, 'csmbishkek@gmail.com', [user.email], fail_silently=False)
+                    except BadHeaderError:
+                        return Response({'error': 'Invalid header found.'}, status=status.HTTP_400_BAD_REQUEST)
+                    return Response({'success': 'Password reset link has been sent to your email.'}, status=status.HTTP_200_OK)
+        return Response({'error': 'Invalid email.'}, status=status.HTTP_400_BAD_REQUEST)

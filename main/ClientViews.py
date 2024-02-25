@@ -137,7 +137,7 @@ def product_details(request, id):
 def list(request):
     trans = translate(language='ru')
     actual_url = request.path.split('/')[2]
-    list_of_products = Products.objects.filter(Category__Types__Name_of_type = "Продукт", language = get_lang(trans=trans))
+    list_of_products = Products.objects.filter(language = get_lang(trans=trans))
     
     context= {
         'list_of_products':list_of_products,

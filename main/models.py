@@ -8,7 +8,7 @@ import uuid, os, re
 class CustomUser(AbstractUser):
     user_type_data = ((1, "HOD"), (2, "Staff"), (3, "Science Staff"))
     user_type = models.CharField(default=1, choices=user_type_data, max_length=10)
-    
+
 # Регионы
 class RegionChoice(models.TextChoices):
     REGION_1 = "Чуйская область", "Чуйская область"
@@ -78,11 +78,6 @@ class FatAcids(models.Model):
         verbose_name = ' -- (Виды Жирнокислоты) -- '
     def __str__(self) -> str:
         return self.name
-    
-class FatAcidsTypeChoice(models.TextChoices):
-    TYPE_1 = "Насыщенные жирные кислоты, %", "Насыщенные жирные кислоты, %"
-    TYPE_2 = "Мононенасыщенные жирные кислоты, %", "Мононенасыщенные жирные кислоты, %"
-    TYPE_3 = "Полиненасыщенные жирные кислоты, %", "Полиненасыщенные жирные кислоты, %"
 
 class FatAcidsType(models.Model):
     name = models.CharField(max_length=50, verbose_name='Тип жирнокислоты')
@@ -94,9 +89,9 @@ class FatAcidsType(models.Model):
 # Жирнокислотный Состав
 class FatAcidCompositionOfMeal(models.Model):
     id = models.AutoField(primary_key=True)
-    product = models.ForeignKey(Products, on_delete=models.CASCADE)
-    types = models.ForeignKey(FatAcidsType, verbose_name='Тип жирных кислоты', on_delete=models.CASCADE)
-    fat_acid = models.ForeignKey(FatAcids, on_delete=models.CASCADE, verbose_name='Вид жирнокислоты')
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, related_name='fatacids')
+    types = models.ForeignKey(FatAcidsType, verbose_name='Тип жирных кислоты', on_delete=models.CASCADE, related_name='fat_acid_types')
+    fat_acid = models.ForeignKey(FatAcids, on_delete=models.CASCADE, verbose_name='Вид жирнокислоты', related_name='lipid_name')
     value = models.FloatField(verbose_name='Содержание')
     language = models.CharField(max_length=50, verbose_name='Язык', choices=LanguageChoice.choices, default=LanguageChoice.RU)
     
@@ -106,7 +101,7 @@ class FatAcidCompositionOfMeal(models.Model):
     
 # Минеральный состав
 class MineralComposition(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True, related_name='minerals')
     Ca = models.FloatField(verbose_name='Ca (Кальций)', default=0)
     Na = models.FloatField(verbose_name='Na (Натрий)', default=0)
     K = models.FloatField(verbose_name='K (Калий)', default=0)
@@ -135,7 +130,7 @@ class MineralComposition(models.Model):
     
 # Аминокислотный состав
 class AminoAcidComposition(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True, related_name='aminoacids')
     asparing = models.FloatField(verbose_name='Аспарагиновая кислота', default=0)
     glutamin = models.FloatField(verbose_name='Глутаминовая кислота', default=0)
     serin = models.FloatField(verbose_name='Серин', default=0)
@@ -162,7 +157,7 @@ class AminoAcidComposition(models.Model):
     
 # Химический состав 
 class Chemicals(models.Model):
-    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True)
+    product = models.ForeignKey(Products, on_delete=models.CASCADE, null=True, related_name='chemicals')
     soluable_solids = models.FloatField(verbose_name='Массовая доля растворимых сухих веществ, %', default=0)
     ascorbic_acids = models.FloatField(verbose_name='Массовая доля аскорбиновой кислоты, г/дм3', default=0)
     ash_content = models.FloatField(verbose_name='Зольность, %', default=0)

@@ -2,6 +2,10 @@ from main.models import *
 from collections import namedtuple
 import time
 
+#API reset password
+#API product detail 
+#API login with API key
+
 AminoAcids = namedtuple('AminoAcids', [
     'isol', 'leit', 'val', 'met_tsist', 
     'fenilalalin_tirosin', 'tripto', 'lis', 'treon'
