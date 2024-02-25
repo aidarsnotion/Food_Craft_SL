@@ -59,6 +59,9 @@
                                 <ul class="sub-menu">
                                     <li><a href="{% url 'recips_list' %}">{% translate "Мои расчёты" %}</a></li>
                                     <li><a href="{% url 'download_pdf' %}" download>{% translate "Руководство пользователя" %}</a></li>
+                                    {% if user.user_type == "1" %}
+                                        <li><a href="{% url 'admin_panel' %}">{% translate "Панель администратора" %}</a></li>
+                                    {% endif %}
                                     <li><a href="{% url 'logout_user' %}">{% translate "Выйти" %}</a></li>
                                 </ul>
                             </li>

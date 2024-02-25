@@ -202,6 +202,8 @@
 				</table>
 			</div>
 			{% endif %}
+			{% if chemicals == None %}
+			{% else %}
 			<h3 class="mt-5">{% translate "Химический состав" %}</h3>
 			<div class="order-details-wrap">
 				<table class="table table-striped table-bordered">
@@ -229,6 +231,7 @@
 					</tbody>
 				</table>
 			</div>
+			{% endif %}
 		</div>
 	</div>
 	<!-- End DataTable about Product -->

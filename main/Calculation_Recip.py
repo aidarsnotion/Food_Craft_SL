@@ -39,7 +39,8 @@ CalculationResults = namedtuple('CalculationResults', [
     'treonin2', 'isolecin_a', 'leitsin_a', 'valin_a', 'met_tsist_a', 
     'fenilalalin_tirosin_a', 'triptofan_a', 'lisin_a', 'treonin_a', 
     'Cmin', 'power_kkal', 'power_kDj', 'kras', 'bc', 'U', 'G', 'my_time',
-    'chart_kras', 'chart_bc', 'chart_U', 'chart_G'
+    'chart_kras', 'chart_bc', 'chart_U', 'chart_G', 'ingredients', 'mass_fraction',
+    'recip_name', 'counter' 
 ])
 
 
@@ -307,7 +308,11 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
             chart_kras=str(round(kras, 3)),
             chart_bc=str(round(bc, 3)),
             chart_U=str(round(U, 3)),
-            chart_G=str(round(G, 3))
+            chart_G=str(round(G, 3)),
+            ingredients=ingredient,
+            mass_fraction=mass_fractions,
+            recip_name=recip_name,
+            counter=str(size),
         )
 
     else:

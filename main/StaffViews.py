@@ -210,7 +210,11 @@ def load_calculation(request):
         'kras':chart_kras,
         'bc':chart_bc,
         'U':chart_U,
-        'G':chart_G
+        'G':chart_G,
+        'Json_Indredients':results.ingredients,
+        'mass_fractions':results.mass_fraction,
+        'recip_name': results.recip_name,
+        'counter':results.counter,
     }
    
     return render(request, 'client_templates/pages/load-calculation.html', context)
@@ -247,7 +251,7 @@ def save_view(request):
             table_kras = data.get('Table_Kras')
         recip_name = data.get('Recip')
 
-        size = int(size) + 1 
+        size = int(size)
 
         current_date = date.today()
         try:

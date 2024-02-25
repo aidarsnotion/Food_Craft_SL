@@ -272,9 +272,6 @@
 <script>
     function loadCharts() {
         // Code for Pie Chart
-        var protein = {{ protein }}
-        var fat = {{ fatacid }}
-        var carbo = {{ carbo }}
 
         var pieData = {
             labels: [
@@ -284,7 +281,7 @@
             ],
             datasets: [
                 {
-                    data: [fat, protein, carbo],
+                    data: [{{ fatacid }}, {{ protein }}, {{ carbo }}],
                     backgroundColor: ['rgb(237, 33, 77)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)'],
                 }
             ]

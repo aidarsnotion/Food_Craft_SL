@@ -56,3 +56,180 @@
 
 
 </script>
+
+
+<script>
+	document.getElementById('submitButton').addEventListener('click', function(){
+        var csrftoken = "{{csrf_token}}";
+
+
+        var table = document.getElementById('tblToExcl1');  // ID таблицы Содержание основных компонентов
+        var tbody = table.getElementsByTagName('tbody')[0];  // Получаем ссылку на <tbody>
+        var rows = tbody.getElementsByTagName('tr');  // Получаем все строки внутри <tbody>
+        var recip_name = "{{recip_name}}";
+        var counter = "{{counter}}"
+        var jsonData = [];  // Создаем пустой массив для данных в формате JSON
+
+        for (var i = 0; i < rows.length; i++) {
+            var cells = rows[i].getElementsByTagName('td');  // Получаем все ячейки в текущей строке
+        
+            var rowData = {};  // Создаем пустой объект для данных строки
+        
+            for (var j = 0; j < cells.length; j++) {
+                var cellData = cells[j].innerText;  // Получаем текст из ячейки
+                var columnName = 'Table1_column' + j;  // Задаем имя столбца
+            
+                rowData[columnName] = cellData;  // Добавляем данные ячейки в объект строки
+            }
+        
+            jsonData.push(rowData);  // Добавляем объект строки в массив данных JSON
+        }
+        
+        var jsonResult = JSON.stringify(jsonData);  // Преобразуем массив данных JSON в строку JSON
+        
+        
+        var table1 = document.getElementById('tblToExcl2');  // ID таблицы Себестоимость
+        var tbody1 = table1.getElementsByTagName('tbody')[0];  // Получаем ссылку на <tbody>
+        var rows1 = tbody1.getElementsByTagName('tr');  // Получаем все строки внутри <tbody>
+
+        var jsonData1 = [];  // Создаем пустой массив для данных в формате JSON
+
+        for (var i = 0; i < rows1.length; i++) {
+            var cells = rows1[i].getElementsByTagName('td');  // Получаем все ячейки в текущей строке
+        
+            var rowData = {};  // Создаем пустой объект для данных строки
+        
+            for (var j = 0; j < cells.length; j++) {
+                var cellData = cells[j].innerText;  // Получаем текст из ячейки
+                var columnName = 'Table2_column' + j;  // Задаем имя столбца
+            
+                rowData[columnName] = cellData;  // Добавляем данные ячейки в объект строки
+            }
+        
+            jsonData1.push(rowData);  // Добавляем объект строки в массив данных JSON
+        }
+        
+        var jsonResult1 = JSON.stringify(jsonData1);  // Преобразуем массив данных JSON в строку JSON
+        
+        
+
+        {% if user.user_type == "3" %}
+            var table2 = document.getElementById('tblToExcl3');  // ID таблицы Содержание НАК и скор
+            var tbody2 = table2.getElementsByTagName('tbody')[0];  // Получаем ссылку на <tbody>
+            var rows2 = tbody2.getElementsByTagName('tr');  // Получаем все строки внутри <tbody>
+
+            var jsonData2 = [];  // Создаем пустой массив для данных в формате JSON
+
+            for (var i = 0; i < rows2.length; i++) {
+                var cells = rows2[i].getElementsByTagName('td');  // Получаем все ячейки в текущей строке
+            
+                var rowData = {};  // Создаем пустой объект для данных строки
+            
+                for (var j = 0; j < cells.length; j++) {
+                    var cellData = cells[j].innerText;  // Получаем текст из ячейки
+                    var columnName = 'Table3_column' + j;  // Задаем имя столбца
+                
+                    rowData[columnName] = cellData;  // Добавляем данные ячейки в объект строки
+                }
+            
+                jsonData2.push(rowData);  // Добавляем объект строки в массив данных JSON
+            }
+            
+            var jsonResult2 = JSON.stringify(jsonData2);  // Преобразуем массив данных JSON в строку JSON
+        
+        {% endif %}
+
+        var table3 = document.getElementById('tblToExcl4');  // ID таблицы Энергетическая ценность
+        var tbody3 = table3.getElementsByTagName('tbody')[0];  // Получаем ссылку на <tbody>
+        var rows3 = tbody3.getElementsByTagName('tr');  // Получаем все строки внутри <tbody>
+
+        var jsonData3 = [];  // Создаем пустой массив для данных в формате JSON
+
+        for (var i = 0; i < rows3.length; i++) {
+            var cells = rows3[i].getElementsByTagName('td');  // Получаем все ячейки в текущей строке
+        
+            var rowData = {};  // Создаем пустой объект для данных строки
+        
+            for (var j = 0; j < cells.length; j++) {
+                var cellData = cells[j].innerText;  // Получаем текст из ячейки
+                var columnName = 'Table4_column' + j;  // Задаем имя столбца
+            
+                rowData[columnName] = cellData;  // Добавляем данные ячейки в объект строки
+            }
+        
+            jsonData3.push(rowData);  // Добавляем объект строки в массив данных JSON
+        }
+        
+        var jsonResult3 = JSON.stringify(jsonData3);  // Преобразуем массив данных JSON в строку JSON
+    
+
+        {% if user.user_type == "3" %}
+            var table4 = document.getElementById('tblToExcl5');  // ID таблицы Качественные показатeли белкового компонента
+            var tbody4 = table4.getElementsByTagName('tbody')[0];  // Получаем ссылку на <tbody>
+            var rows4 = tbody4.getElementsByTagName('tr');  // Получаем все строки внутри <tbody>
+
+            var jsonData4 = [];  // Создаем пустой массив для данных в формате JSON
+
+            for (var i = 0; i < rows4.length; i++) {
+                var cells = rows4[i].getElementsByTagName('td');  // Получаем все ячейки в текущей строке
+            
+                var rowData = {};  // Создаем пустой объект для данных строки
+            
+                for (var j = 0; j < cells.length; j++) {
+                    var cellData = cells[j].innerText;  // Получаем текст из ячейки
+                    var columnName = 'Table5_column' + j;  // Задаем имя столбца
+                
+                    rowData[columnName] = cellData;  // Добавляем данные ячейки в объект строки
+                }
+            
+                jsonData4.push(rowData);  // Добавляем объект строки в массив данных JSON
+            }
+            
+            var jsonResult4 = JSON.stringify(jsonData4);  // Преобразуем массив данных JSON в строку JSON
+            
+        {% endif %}
+            
+        var list_ingredients = {{ Json_Indredients|safe }};
+        var list_mass_fractions = {{ mass_fractions|safe }};
+
+        datas = {
+            Table_Chemicals: JSON.stringify(jsonData),
+            Table_Price: JSON.stringify(jsonData1),
+            {% if user.user_type == "3" %}Table_Scor: JSON.stringify(jsonData2),{% endif %}
+            Table_Power: JSON.stringify(jsonData3),
+            {% if user.user_type == "3" %}Table_Kras: JSON.stringify(jsonData4),{% endif %}
+            Recip: recip_name,
+            counter: counter,
+            ingred: JSON.stringify(list_ingredients),
+            mass_fraction: JSON.stringify(list_mass_fractions),
+        }
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '{% url 'save_results' %}', true);
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.setRequestHeader('X-CSRFToken', csrftoken);
+        xhr.onload = function() {
+            if (xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                if (response.success) {
+                    // Показать модальное окно с успешным сообщением
+                    document.getElementById('modalTitle').innerText = 'Успешно!';
+                    document.getElementById('modalBody').innerText = 'Результаты успешно сохранены.';
+                    $('#myModal').modal('show');
+                } else {
+                    // Показать модальное окно с сообщением об ошибке
+                    document.getElementById('modalTitle').innerText = 'Ошибка!';
+                    document.getElementById('modalBody').innerText = response.error;
+                    $('#myModal').modal('show');
+                }
+            } else {
+                // Показать модальное окно с сообщением об ошибке
+                document.getElementById('modalTitle').innerText = 'Ошибка!';
+                document.getElementById('modalBody').innerText = response.error;
+                $('#myModal').modal('show');
+            }
+        };
+        xhr.send(JSON.stringify(datas));
+    });
+
+</script>   
