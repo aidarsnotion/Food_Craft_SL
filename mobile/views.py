@@ -18,7 +18,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from collections import namedtuple
 from django.db.models import Q
 from main.Calculation_Recip import process_recipe
-
+from django.http import Http404
 from rest_framework.permissions import AllowAny
 from mobile.serializers import *  
 from rest_framework import views 
@@ -63,6 +63,8 @@ class LoginUserSerializer(serializers.Serializer):
 
 class LoginAPIView(APIView):
     serializer_class = LoginUserSerializer
+    permission_classes = [AllowAny]
+
     @swagger_auto_schema(
         request_body=LoginUserSerializer,
         responses={
@@ -117,14 +119,42 @@ class ProductDetail_APIView(APIView):
         
     def get(self, request, *args, **kwargs):
         product_id = request.query_params.get('id')
-
+        
         fil_data = namedtuple('filter_data', 'id')
         fl_data = fil_data(product_id)
 
         queryset = filter_data(self.queryset, fl_data, request)
 
+        # Получаем все записи FatAcidCompositionOfMeal для указанного продукта
+        fatacidcomps = FatAcidCompositionOfMeal.objects.filter(product_id=fl_data)
+        
+        # Создаем словарь для хранения сгруппированных данных
+        grouped_data = defaultdict(list)
+        
+        # Группируем записи по типам жирных кислот
+        for fatacidcomp in fatacidcomps:
+            grouped_data[fatacidcomp.types.name].append({
+                'lipid_name': fatacidcomp.fat_acid.name,
+                'value': fatacidcomp.value
+            })
+        
+        # Проверяем, все ли значения value равны 0
+        all_zero = all(comp['value'] == 0 for comps in grouped_data.values() for comp in comps)
+
+        # Если все значения равны 0, устанавливаем fatacid_ser равным None
+        if all_zero:
+            fatacid_ser = None
+        else:
+            # Проходим по сгруппированным данным и добавляем их в основной словарь
+            fatacid_ser = {}
+            for types, data in grouped_data.items():
+                fatacid_ser[types] = data
+                
         serializer = self.serializer_class(queryset, many=True)
-        return Response(serializer.data)
+
+        response_data = {'data': serializer.data, 'fatacid': fatacid_ser}
+
+        return Response(response_data)
 
 
 
@@ -241,7 +271,7 @@ class Fatacids_APIView(APIView):
     API для Жирнокислотного состава продуктов питания
     """
     queryset = FatAcidCompositionOfMeal.objects.all()
-    serializer_class = FatacidCompositionSerializer
+
     permission_classes = [AllowAny]
     pagination_class = PageNumberPagination
 
@@ -437,11 +467,10 @@ class Minerals_APIView(APIView):
     
 class ProcessRecipeSerializer(serializers.Serializer):
     recip_name = serializers.CharField()
-    reg = serializers.CharField()
+    reg = serializers.ListField(child=serializers.CharField())
     ingredient = serializers.ListField(child=serializers.CharField())
-    mass_fraction = serializers.ListField(child=serializers.IntegerField())
-    price = serializers.ListField(child=serializers.IntegerField())
-    size = serializers.IntegerField()
+    mass_fraction = serializers.ListField(child=serializers.FloatField())
+    price = serializers.ListField(child=serializers.FloatField())
 
 
 class ProcessRecipeAPIView(APIView):
@@ -464,7 +493,7 @@ class ProcessRecipeAPIView(APIView):
             ingredient = serializer.data.get('ingredient')
             mass_fraction = serializer.data.get('mass_fraction')
             price = serializer.data.get('price')
-            size = serializer.data.get('size')
+            size = len(ingredient)
 
             calculation_results = process_recipe(recip_name, reg, ingredient, mass_fraction, price, size)
 
@@ -477,9 +506,51 @@ class ProcessRecipeAPIView(APIView):
 
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        
+
+
+class ProductsRegionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Products
+        fields = ['id', 'attribute_name', 'Category', 'date_analis', 'language']
+
+
+class LoadProductsFromRegionAPIView(APIView):
+    """
+    Получение списка продуктов из указанного региона.
+    """
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        responses={
+            200: ProductsRegionSerializer,
+            400: "Error message"
+        },
+        manual_parameters=[
+            openapi.Parameter('region', openapi.IN_QUERY, description="Регион для получения продукта", type=openapi.TYPE_STRING),
+        ]
+    )
+    def get(self, request, *args, **kwargs):
+        # Получаем значение параметра region из запроса
+        region = request.query_params.get('region')
+
+        # Проверяем, что параметр region был передан
+        if not region:
+            return Response({'error': 'The region parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
+
+        # Фильтруем продукты по указанному региону
+        products = Products.objects.filter(Category__Region__region=region)
+
+        # Проверяем, что найдены продукты для указанного региона
+        if not products.exists():
+            return Response({'message': 'No products found for the specified region'}, status=status.HTTP_200_OK)
+
+        # Сериализуем найденные продукты и отправляем в ответе
+        serializer = ProductsRegionSerializer(products, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class PasswordResetRequestAPIView(APIView):
+    permission_classes = [AllowAny]
+    
     @swagger_auto_schema(
         request_body=openapi.Schema(
             type=openapi.TYPE_OBJECT,

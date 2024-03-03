@@ -58,7 +58,7 @@ class Categories(models.Model):
 class Products(models.Model):
     id = models.AutoField(primary_key=True)
     attribute_name = models.CharField(verbose_name='Наименование продукта', max_length=75)
-    Category = models.ForeignKey(Categories, on_delete=models.RESTRICT, null=True, verbose_name='Категория продукта')
+    Category = models.ForeignKey(Categories, on_delete=models.RESTRICT, null=True, verbose_name='Категория продукта', related_name='category_name')
     date_analis = models.DateField(verbose_name='Дата исследования', default=timezone.now)
     language = models.CharField(max_length=50, verbose_name='Язык', choices=LanguageChoice.choices, default=LanguageChoice.RU)
 

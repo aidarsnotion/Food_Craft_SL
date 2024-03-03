@@ -1,6 +1,7 @@
 from main.models import *
 from collections import namedtuple
 import time
+import sys
 
 #API reset password
 #API product detail 
@@ -169,14 +170,14 @@ def calculate_aminoacid_utility(Cmin, aminoacid_scores):
     """
     Рассчитывает значения утилитарных коэффициентов на основе Cmin и значений аминокислотных скоров.
     """
-    isolecin = Cmin / aminoacid_scores.isol
-    leitsin = Cmin / aminoacid_scores.leit
-    valin = Cmin / aminoacid_scores.val
-    met_tsist = Cmin / aminoacid_scores.met_tsist
-    fenilalalin_tirosin = Cmin / aminoacid_scores.fenilalalin_tirosin
-    triptofan = Cmin / aminoacid_scores.tripto
-    lisin = Cmin / aminoacid_scores.lis
-    treonin = Cmin / aminoacid_scores.treon
+    isolecin = Cmin / aminoacid_scores.isol if aminoacid_scores.isol > 0 else 0
+    leitsin = Cmin / aminoacid_scores.leit if aminoacid_scores.leit > 0 else 0
+    valin = Cmin / aminoacid_scores.val if aminoacid_scores.val > 0 else 0
+    met_tsist = Cmin / aminoacid_scores.met_tsist if aminoacid_scores.met_tsist > 0 else 0
+    fenilalalin_tirosin = Cmin / aminoacid_scores.fenilalalin_tirosin if aminoacid_scores.fenilalalin_tirosin > 0 else 0
+    triptofan = Cmin / aminoacid_scores.tripto if aminoacid_scores.tripto > 0 else 0
+    lisin = Cmin / aminoacid_scores.lis if aminoacid_scores.lis > 0 else 0
+    treonin = Cmin / aminoacid_scores.treon if aminoacid_scores.treon > 0 else 0
     
     return AminoAcids_utility(
         isol=isolecin,
@@ -188,6 +189,7 @@ def calculate_aminoacid_utility(Cmin, aminoacid_scores):
         lis=lisin,
         treon=treonin
     )
+
 
 
 def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
@@ -234,8 +236,19 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
             
         aminoacids_sum = get_aminoacids_sum(aminoacids_list)
         aminoacids_total = get_total_aminoacids(aminoacids_sum, total_mass_prot)
-        aminoacids_scor = calculate_aminoacid_scores(aminoacids_total)        
-        Cmin = min(aminoacids_total.isol, aminoacids_total.leit, aminoacids_total.val, aminoacids_total.met_tsist, aminoacids_total.fenilalalin_tirosin, aminoacids_total.tripto, aminoacids_total.lis, aminoacids_total.treon)
+        aminoacids_scor = calculate_aminoacid_scores(aminoacids_total) 
+        values = [aminoacids_total.isol, aminoacids_total.leit, aminoacids_total.val, aminoacids_total.met_tsist, aminoacids_total.fenilalalin_tirosin, aminoacids_total.tripto, aminoacids_total.lis, aminoacids_total.treon]
+
+        # Избавляемся от нулей
+        values = [value for value in values if value > 0]
+
+        # Если все значения нулевые, используем sys.maxsize
+        if not values:
+            Cmin = sys.maxsize
+        else:
+            # Находим минимальное значение
+            Cmin = min(values)       
+        # Cmin = min(aminoacids_total.isol, aminoacids_total.leit, aminoacids_total.val, aminoacids_total.met_tsist, aminoacids_total.fenilalalin_tirosin, aminoacids_total.tripto, aminoacids_total.lis, aminoacids_total.treon)
 
         aminoacids_util = calculate_aminoacid_utility(Cmin, aminoacids_scor)
 

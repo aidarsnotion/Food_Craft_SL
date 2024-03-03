@@ -2,7 +2,7 @@
 {% load static %}
 {% load i18n %}
 
-{% block page_title %}Калькулятор рецептуры мясных продуктов{% endblock page_title%}
+{% block page_title %}{% translate "Калькулятор рецептуры мясных продуктов" %}{% endblock page_title%}
 
 {% block content %}
 
@@ -235,7 +235,7 @@
 				$('.ing-num').text(i+1);
 				$("#counter").val(i);
 			} else {
-				alert("Вы можете добавить максимально 8 ингредиентов");
+				alert("{% translate "Вы можете добавить максимально 8 ингредиентов" %}");
 				i = 7;
 			}
 		});
@@ -343,9 +343,9 @@
 
         var pieData = {
             labels: [
-                'Жиры',
-                'Белки',
-                'Углеводы',
+                '{% translate "Жиры" %}',
+                '{% translate "Белки" %}',
+                '{% translate "Углеводы" %}',
             ],
             datasets: [
                 {
@@ -370,8 +370,8 @@
         // Code for Bar Chart
         var barData = {
             labels: [
-                'КРАС',
-                'БЦ',
+                '{% translate "КРАС" %}',
+                '{% translate "БЦ" %}',
                 'U',
                 'G',
             ],

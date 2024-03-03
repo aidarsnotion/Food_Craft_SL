@@ -37,6 +37,7 @@ urlpatterns = [
     path('login-user/', LoginAPIView.as_view(), name='login_user'),
     path('product-detail/', ProductDetail_APIView.as_view(), name='product_detail'),
     path('password-reset', PasswordResetRequestAPIView.as_view(), name='password_reset'),
+    path('products-from-region', LoadProductsFromRegionAPIView.as_view(), name='region'),
 
     path('docs/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),

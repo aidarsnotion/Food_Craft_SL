@@ -243,7 +243,7 @@
                         <!-- Результаты или сообщение об ошибке будут отображены здесь -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" id="closeModalButton" class="btn btn-default" data-dismiss="modal">Закрыть</button>
+                        <button type="button" id="closeModalButton" class="btn btn-default" data-dismiss="modal">{% translate "Закрыть" %}</button>
                     </div>
                 </div>
             </div>
@@ -275,9 +275,9 @@
 
         var pieData = {
             labels: [
-                'Жиры',
-                'Белки',
-                'Углеводы',
+                '{% translate "Жиры" %}',
+                '{% translate "Белки" %}',
+                '{% translate "Углеводы" %}',
             ],
             datasets: [
                 {
@@ -302,10 +302,10 @@
         // Code for Bar Chart
         var barData = {
             labels: [
-                'КРАС',
-                'БЦ',
-                'U',
-                'G',
+                '{% translate "КРАС" %}',
+                '{% translate "БЦ" %}',
+                '{% translate "U" %}',
+                '{% translate "G" %}',
             ],
             datasets: [
                 {
@@ -591,18 +591,18 @@
                 var response = JSON.parse(xhr.responseText);
                 if (response.success) {
                     // Показать модальное окно с успешным сообщением
-                    document.getElementById('modalTitle').innerText = 'Успешно!';
-                    document.getElementById('modalBody').innerText = 'Результаты успешно сохранены.';
+                    document.getElementById('modalTitle').innerText = '{% translate "Успешно!" %}';
+                    document.getElementById('modalBody').innerText = '{% translate "Результаты успешно сохранены." %}';
                     $('#myModal').modal('show');
                 } else {
                     // Показать модальное окно с сообщением об ошибке
-                    document.getElementById('modalTitle').innerText = 'Ошибка!';
+                    document.getElementById('modalTitle').innerText = '{% translate "Ошибка!" %}';
                     document.getElementById('modalBody').innerText = response.error;
                     $('#myModal').modal('show');
                 }
             } else {
                 // Показать модальное окно с сообщением об ошибке
-                document.getElementById('modalTitle').innerText = 'Ошибка!';
+                document.getElementById('modalTitle').innerText = '{% translate "Ошибка!" %}';
                 document.getElementById('modalBody').innerText = response.error;
                 $('#myModal').modal('show');
             }

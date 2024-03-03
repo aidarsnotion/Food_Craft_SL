@@ -23,7 +23,7 @@ from django.db.models import Q
 from main.Calculation_Recip import *
 
 def staff_home(request):
-    return render(request, 'staff_templates/index.html')
+    return render(request, 'client_templates/index.html')
 
 def translate(language):
     cur_language = get_language()
@@ -117,8 +117,6 @@ def product_details(request, id):
         
     return render(request, 'client_templates/pages/details.html',context)
 
-def staff_calc(request):
-    pass
 
 #Designing Recips
 def meels(request):

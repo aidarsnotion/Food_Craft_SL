@@ -1,6 +1,9 @@
 from django.contrib.auth.models import Group
 from main.models import *
 from django.contrib.auth import authenticate
+from itertools import groupby
+from collections import defaultdict
+
 
 from rest_framework import serializers
 
@@ -84,7 +87,6 @@ class CategorySerializer(serializers.ModelSerializer):
 
 class ProductsSerializer(serializers.ModelSerializer):
     """   Продукты питания  """
-    Category = CategorySerializer()
     category_name = serializers.CharField(source='Category.Name_of_category')
     Region = serializers.CharField(source='Category.Region.region')
 
@@ -152,7 +154,49 @@ class FatacidCompositionSerializer(serializers.ModelSerializer):
                   'lipid_name',
                   'value',
                   ]
-        
+
+
+#Здесь повторяются записи, но модельки организованы правильно
+# class FatAcidsSerializer(serializers.ModelSerializer):
+#     class Meta:
+#         model = FatAcids
+#         fields = ['name']
+
+# class FatAcidCompositionSerializer(serializers.ModelSerializer):
+#     fat_acid = FatAcidsSerializer()
+
+#     class Meta:
+#         model = FatAcidCompositionOfMeal
+#         fields = ['fat_acid', 'value']
+
+# class FatAcidsTypeSerializer(serializers.ModelSerializer):
+#     fat_acids = serializers.SerializerMethodField()
+
+#     class Meta:
+#         model = FatAcidsType
+#         fields = ['fat_acids']
+
+#     def get_fat_acids(self, obj):
+#         compositions = FatAcidCompositionOfMeal.objects.filter(types=obj.types, product=obj.product).order_by('fat_acid__name')
+#         fat_acids_data = {}
+#         for composition in compositions:
+#             fat_acids_data.setdefault(composition.types.name, []).append({
+#                 'lipid_name': composition.fat_acid.name,
+#                 'value': composition.value
+#             })
+
+#         grouped_data = []
+#         for fat_acid_type, fat_acids in fat_acids_data.items():
+#             # Проверяем, был ли уже добавлен тип жирных кислот
+#             if not any(data['types'] == fat_acid_type for data in grouped_data):
+#                 grouped_data.append({
+#                     'types': fat_acid_type,
+#                     'fat_acids': fat_acids
+#                 })
+
+#         return grouped_data
+
+
 
 class AminoAcidCompositionSerializer(serializers.ModelSerializer):
     """   Аминокислотный состав продуктов питания  """
@@ -182,6 +226,13 @@ class AminoAcidCompositionSerializer(serializers.ModelSerializer):
                   'lisin',
                   'prolin',
                   ]
+                  
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        # Проверяем, все ли значения равны
+        if all(value is None or value == '' or value == 0 for value in data.values()):
+            return None
+        return data
         
 class MineralCompositionSerializer(serializers.ModelSerializer):
     """   Минеральный состав продуктов питания  """
@@ -217,11 +268,10 @@ class MineralCompositionSerializer(serializers.ModelSerializer):
         
 class ProcessRecipeSerializer(serializers.Serializer):
     recip_name = serializers.CharField()
-    reg = serializers.CharField()
+    reg = serializers.ListField(child=serializers.CharField())
     ingredient = serializers.ListField(child=serializers.CharField())
-    mass_fraction = serializers.ListField(child=serializers.IntegerField())
-    price = serializers.ListField(child=serializers.IntegerField())
-    size = serializers.IntegerField()
+    mass_fraction = serializers.ListField(child=serializers.FloatField())
+    price = serializers.ListField(child=serializers.FloatField())
 
 
 class CalculationResultsSerializer(serializers.Serializer):
@@ -271,7 +321,6 @@ class CalculationResultsSerializer(serializers.Serializer):
 class DetailedProductSerializer(serializers.ModelSerializer):
     chemicals = ChemicalsSerializer(many=True, read_only=True)
     aminoacids = AminoAcidCompositionSerializer(many=True, read_only=True)
-    fatacids = FatacidCompositionSerializer(many=True, read_only=True)
     minerals = MineralCompositionSerializer(many=True, read_only=True)
     category_name = serializers.CharField(source='Category.Name_of_category')
     Region = serializers.CharField(source='Category.Region.region')
@@ -285,6 +334,5 @@ class DetailedProductSerializer(serializers.ModelSerializer):
                   'date_analis',
                   'chemicals',
                   'aminoacids',
-                  'fatacids',
                   'minerals',
                   ]

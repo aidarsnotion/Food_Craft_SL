@@ -113,7 +113,10 @@ def product_details(request, id):
     result = "/".join(actual_url)
     product_id = Products.objects.get(id=id)
     fatacids = FatAcidCompositionOfMeal.objects.filter(product=id)
-    mineracomp = MineralComposition.objects.get(product=id)
+    try:
+        mineracomp = MineralComposition.objects.get(product=id)
+    except MineralComposition.DoesNotExist:
+        mineracomp = None
     amoinacids = AminoAcidComposition.objects.get(product=id)
     chemicals = Chemicals.objects.filter(product=id)
     if amoinacids.asparing == 0 and amoinacids.glutamin == 0 and amoinacids.serin == 0 and amoinacids.gistidin == 0 and amoinacids.glitsin == 0 and amoinacids.treonin == 0 and amoinacids.arginin == 0 and amoinacids.alanin == 0 and amoinacids.tirosin == 0 and amoinacids.tsistein == 0 and amoinacids.valin == 0 and amoinacids.metionin == 0 and amoinacids.triptofan == 0 and amoinacids.fenilalalin == 0 and amoinacids.izoleitsin == 0 and amoinacids.leitsin == 0 and amoinacids.lisin == 0 and amoinacids.prolin == 0:
