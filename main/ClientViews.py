@@ -152,7 +152,7 @@ def list(request):
 
 def download_pdf(request):
     # Path to the PDF file
-    pdf_path = 'C:/Users/Aigap/Desktop/permission/user_guide.pdf'
+    pdf_path = '../permission/user_guide.pdf'
 
     if os.path.exists(pdf_path):
         with open(pdf_path, 'rb') as pdf_file:

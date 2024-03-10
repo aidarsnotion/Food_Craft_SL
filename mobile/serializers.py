@@ -139,6 +139,12 @@ class FatAcidsSerializer(serializers.ModelSerializer):
         fields = ['id',
                   'name']
         
+class RegionSrializer(serializers.ModelSerializer):
+    class Meta:
+        model = Regions
+        fields = ['id',
+                  'region']
+
 class FatacidCompositionSerializer(serializers.ModelSerializer):
     """   Жирнокислотный состав продуктов питания  """
     # product_id = serializers.IntegerField(source='product.id')

@@ -66,7 +66,7 @@ class Products(models.Model):
         verbose_name = ' -- Наименование продукта -- '
     
     def __str__(self):
-        category_info = f"{self.Category.Region.region} - {self.Category.Name_of_category}" if self.Category else "N/A"
+        category_info = f"{self.Category.Name_of_category}" if self.Category else "N/A"
         return f"{self.attribute_name} - {category_info}"
 
 # Виды Жирнокислоты

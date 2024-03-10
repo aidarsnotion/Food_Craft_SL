@@ -1,0 +1,83 @@
+{% load static %}
+{% load i18n %}
+
+<!-- favicon -->
+<link rel="shortcut icon" type="{% static 'image/png'%}" href="{% static 'client/img/favicon.png'%}">
+<!-- google font -->
+<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Poppins:400,700&display=swap" rel="stylesheet">
+<!-- fontawesome -->
+<link rel="stylesheet" href="{% static 'client/css/all.min.css'%}">
+<!-- bootstrap -->
+<link rel="stylesheet" href="{% static 'client/bootstrap/css/bootstrap.min.css'%}">
+<!-- owl carousel -->
+<link rel="stylesheet" href="{% static 'client/css/owl.carousel.css'%}">
+<!-- magnific popup -->
+<link rel="stylesheet" href="{% static 'client/css/magnific-popup.css'%}">
+<!-- animate css -->
+<link rel="stylesheet" href="{% static 'client/css/animate.css'%}">
+<!-- mean menu css -->
+<link rel="stylesheet" href="{% static 'client/css/meanmenu.min.css'%}">
+<!-- main style -->
+<link rel="stylesheet" href="{% static 'client/css/main.css'%}">
+<!-- responsive -->
+<link rel="stylesheet" href="{% static 'client/css/responsive.css'%}">
+<!-- datatables -->
+<link rel="stylesheet" href="{% static 'client/DataTables/datatables.min.css' %}">
+
+{% block content %}
+<body>
+
+	<!-- home page slider -->
+	<div class="homepage-slider">
+
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-1">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1 text-center">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">{% translate "О нас" %}</p>
+								<h1>{% translate "База данных пищевых продуктов питания КР" %}</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-3">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1 text-center">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">{% translate "Калькулятор" %}</p>
+								<h1>{% translate "Для расчета состава пищевого продукта" %}</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- single home slider -->
+		<div class="single-homepage-slider homepage-bg-2">
+			<div class="container">
+				<div class="row">
+					<div class="col-lg-10 offset-lg-1 text-center">
+						<div class="hero-text">
+							<div class="hero-text-tablecell">
+								<p class="subtitle">{% translate "база данных" %}</p>
+								<h1>{% translate "Продуктов питания Кыргызской Республики" %}</h1>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- end home page slider -->
+{% endblock content %}
+
+{% include 'client_templates/pages/scripts.html' %}

@@ -15,6 +15,9 @@ def translate(language):
         activate(cur_language)
     return cur_language
 
+def mobile_page(request):
+    return render(request, 'client_templates/mobile_main_page.html')
+
 # Получаем выбранный язык
 def get_lang(trans):
     if trans == 'en':

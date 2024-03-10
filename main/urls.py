@@ -1,11 +1,13 @@
 from django.urls import path
 from . import views, AdminViews, StaffViews, ClientViews
 from django.contrib.auth import views as auth_views
+from mobile import views as m_views
 
 
 urlpatterns = [
     #URL's для клиента
     path('', ClientViews.client_home, name="client_home"),
+    path('mobile/main-page/', views.mobile_page, name='mobile_main_page'),
     path('about', ClientViews.about, name='about-us'),
     path('contact', ClientViews.contact, name='contact'),
     path('send_message/', ClientViews.send_message),

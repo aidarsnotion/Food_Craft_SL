@@ -99,6 +99,34 @@ class LoginAPIView(APIView):
             return Response({'username': user.username, 'api_key': api_key.key}, status=status.HTTP_200_OK)
 
 
+class Regions_APIView(APIView):
+    """
+    API получение регионов
+    """
+    serializer_class = RegionSrializer
+    queryset = Regions.objects.all()
+
+    @swagger_auto_schema(
+        responses={200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+        )},
+        manual_parameters=[
+            openapi.Parameter('language', openapi.IN_QUERY, description="Язык", type=openapi.TYPE_STRING),
+        ]
+    )
+
+    def get(self, request, *args, **kwargs):
+        language = request.query_params.get('language')
+
+        fil_data = namedtuple('filter_data', 'language')
+        fl_data = fil_data(language)
+
+        queryset = filter_data(self.queryset, fl_data, request)
+
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+
 class ProductDetail_APIView(APIView):
     """
     API Детальной информации о продукте питания
@@ -526,7 +554,7 @@ class LoadProductsFromRegionAPIView(APIView):
             400: "Error message"
         },
         manual_parameters=[
-            openapi.Parameter('region', openapi.IN_QUERY, description="Регион для получения продукта", type=openapi.TYPE_STRING),
+            openapi.Parameter('region', openapi.IN_QUERY, description="Регион для получения продукта", type=openapi.TYPE_INTEGER),
         ]
     )
     def get(self, request, *args, **kwargs):
@@ -538,7 +566,7 @@ class LoadProductsFromRegionAPIView(APIView):
             return Response({'error': 'The region parameter is required'}, status=status.HTTP_400_BAD_REQUEST)
 
         # Фильтруем продукты по указанному региону
-        products = Products.objects.filter(Category__Region__region=region)
+        products = Products.objects.filter(Category__Region__pk=region)
 
         # Проверяем, что найдены продукты для указанного региона
         if not products.exists():
