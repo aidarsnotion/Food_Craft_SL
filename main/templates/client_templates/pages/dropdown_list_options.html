@@ -1,4 +1,6 @@
+{% load i18n %}
 <option value="">{% translate "Выберите ингредиент" %}</option>
-{% for value in ingredients %}
-<option value="{{ value.id }}">{{ value }}</option>
+
+{% for ingredient in ingredients %}
+    <option value="{{ ingredient.id }}">{{ ingredient }}</option>
 {% endfor %}

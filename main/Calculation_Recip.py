@@ -7,6 +7,7 @@ import sys
 #API product detail 
 #API login with API key
 
+
 AminoAcids = namedtuple('AminoAcids', [
     'isol', 'leit', 'val', 'met_tsist', 
     'fenilalalin_tirosin', 'tripto', 'lis', 'treon'
@@ -21,6 +22,7 @@ AminoAcidsTotal = namedtuple('AminoAcidsTotal', [
     'isol', 'leit', 'val', 'met_tsist', 
     'fenilalalin_tirosin', 'tripto', 'lis', 'treon'
 ])
+
 
 AminoAcids_SCOR = namedtuple('AminoAcidsTotal', [
     'isol', 'leit', 'val', 'met_tsist', 
@@ -197,7 +199,7 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
     start = time.time()
 
     if recip_name != "" and reg != "" and ingredient and mass_fraction and price and size:
-        prot = fat = carbo = prplus = isol = leit = val = met_tsist1 = fenilalalin_tirosin1 = tripto = lis = treon = 0
+        prot = fat = carbo = prplus = 0
         mass_fractions = total_mass_prot = Cmin = kras = bc = U = G = 0
 
         for i in range(0, int(size)):

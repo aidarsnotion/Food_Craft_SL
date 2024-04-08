@@ -20,7 +20,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from collections import namedtuple
 from django.db.models import Q
-from main.Calculation_Recip import *
+from main.calculation import process_recipe
 
 def staff_home(request):
     return render(request, 'client_templates/index.html')
@@ -126,11 +126,14 @@ def meels(request):
     actual_url.append(request.path.split('/')[3])
     result = "/".join(actual_url)
 
+    reg = '13'
+
     product = Products.objects.all()
     etalon = Products.objects.filter(Category__Name_of_category = "Эталон")
     print(etalon)
     check = False
     region_choices = Regions.objects.filter(language=get_lang(trans))
+    ingredient = Products.objects.filter(Category__Region__id = reg)
     hide_ingredients = None
 
     context= {
@@ -140,6 +143,7 @@ def meels(request):
         "hide_ingredients" : hide_ingredients,
         "etalon": etalon,
         "actual_url": result,
+        'ingredients':ingredient,
     }
 
     return render(request, 'client_templates/pages/meels.html', context)
@@ -152,8 +156,8 @@ def get_recip_id(id):
 #Ajax Region
 def load_courses(request):
     reg = request.GET.get('regionId')
-    trans = translate(language='ru')
-    ingredient = Products.objects.filter(Category__Region__id = reg, language = get_lang(trans))
+    # trans = translate(language='ru')
+    ingredient = Products.objects.filter(Category__Region__id = reg)
     return render(request, 'client_templates/pages/dropdown_list_options.html', {'ingredients': ingredient})
 
 @login_required
@@ -186,34 +190,43 @@ def load_calculation(request):
     
     results = process_recipe(recip_name, reg, ingredient, mass_fraction, price, size)
 
-    #Конвертируем значения в строку и записываем новые переменные, чтобы прочитать через Chart.js
-    chart_protein = str(results.protein)
-    chart_fatacid = str(results.fatacid)
-    chart_carbo = str(results.carbohydrates)
-    recip_name = str(recip_name)
 
-    chart_kras = str(results.kras)
-    chart_bc = str(results.bc)
-    chart_U = str(results.U)
-    chart_G = str(results.G)
+    if results.error_flag == 0:
+        #Конвертируем значения в строку и записываем новые переменные, чтобы прочитать через Chart.js
+        chart_protein = str(results.protein)
+        chart_fatacid = str(results.fatacid)
+        chart_carbo = str(results.carbohydrates)
+        recip_name = str(recip_name)
+
+        chart_kras = str(results.kras)
+        chart_bc = str(results.bc)
+        chart_U = str(results.U)
+        chart_G = str(results.G)
     
-    context = {
-        'ingredients': products,
-        'region' : regions,
-        'error_message' : error_message,
-        'chemicals' : results,
-        'protein':chart_protein,
-        'fatacid':chart_fatacid,
-        'carbo':chart_carbo,
-        'kras':chart_kras,
-        'bc':chart_bc,
-        'U':chart_U,
-        'G':chart_G,
-        'Json_Indredients':results.ingredients,
-        'mass_fractions':results.mass_fraction,
-        'recip_name': results.recip_name,
-        'counter':results.counter,
-    }
+        context = {
+            'ingredients': products,
+            'region' : regions,
+            'error_message' : error_message,
+            'chemicals' : results,
+            'protein':chart_protein,
+            'fatacid':chart_fatacid,
+            'carbo':chart_carbo,
+            'kras':chart_kras,
+            'bc':chart_bc,
+            'U':chart_U,
+            'G':chart_G,
+            'Json_Indredients':results.ingredients,
+            'mass_fractions':results.mass_fraction,
+            'recip_name': results.recip_name,
+            'counter':results.counter,
+        }
+    
+    else:
+        context = {
+            'ingredients': products,
+            'region' : regions,
+            'error_message' : results.error_message,
+        }
    
     return render(request, 'client_templates/pages/load-calculation.html', context)
 

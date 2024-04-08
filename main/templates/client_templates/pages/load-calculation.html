@@ -12,7 +12,7 @@
         <div class="row  justify-content-center">
 
             
-            {% if user.user_type == "3" %}
+            {% if user.user_type == "3" and chemicals.bc != 0 and chemicals.kras != 0 and chemicals.u != 0 and chemicals.g != 0 %}
             <div class="col-lg-6 align-self-center chart-print">
                 <div class="card shadow mb-4">
                     <div class="card-body">
@@ -88,7 +88,7 @@
             </div>
         </div>
 
-        {% if user.user_type == "3" %}
+        {% if user.user_type == "3" and chemicals.bc != 0 and chemicals.kras != 0 and chemicals.u != 0 and chemicals.g != 0 %}
         <div class="row">
             <div class="col-lg-12">
                 <div class="card-title bg-custom border p-1 text-center">
@@ -177,7 +177,7 @@
                     </table>
                 </div>
             </div>
-            {% if user.user_type == "3" %}
+            {% if user.user_type == "3" and chemicals.bc != 0 and chemicals.kras != 0 and chemicals.u != 0 and chemicals.g != 0 %}
             <div class="col-lg-6">
                 <div class="card-title bg-custom border p-1 text-center">
                     <h3>{% translate "Качественные показатeли белкового компонента" %}</h3>
@@ -272,7 +272,6 @@
 <script>
     function loadCharts() {
         // Code for Pie Chart
-
         var pieData = {
             labels: [
                 '{% translate "Жиры" %}',
@@ -309,7 +308,7 @@
             ],
             datasets: [
                 {
-                    data: [{{kras}}, {{bc}}, {{U}}, {{G}}],
+                    data: [{{ kras }}, {{ bc }}, {{ U }}, {{ G }}],
                     backgroundColor: ['rgb(255, 99, 132)', 'rgb(54, 162, 235)', 'rgb(255, 205, 86)', 'rgb(201, 203, 207)'],
                 }
             ]
@@ -321,12 +320,22 @@
             responsive: true,
         };
     
-        var barChartInstance = new Chart(barChart, {
-            type: 'bar',
-            data: barData,
-            options: barOptions
+        // Проверка наличия ненулевых значений
+        var nonZeroValues = [{{ kras }}, {{ bc }}, {{ U }}, {{ G }}];
+        var hasNonZeroValues = nonZeroValues.some(function(value) {
+            return value !== 0;
         });
+    
+        // Если хотя бы одно значение ненулевое, создаем график
+        if (hasNonZeroValues) {
+            var barChartInstance = new Chart(barChart, {
+                type: 'bar',
+                data: barData,
+                options: barOptions
+            });
+        }
     };
+    
 </script>
 
 {% if user.user_type == "3" %}

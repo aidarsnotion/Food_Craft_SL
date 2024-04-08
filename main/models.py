@@ -66,8 +66,7 @@ class Products(models.Model):
         verbose_name = ' -- Наименование продукта -- '
     
     def __str__(self):
-        category_info = f"{self.Category.Name_of_category}" if self.Category else "N/A"
-        return f"{self.attribute_name} - {category_info}"
+        return f"{self.attribute_name}"
 
 # Виды Жирнокислоты
 class FatAcids(models.Model):
@@ -149,6 +148,15 @@ class AminoAcidComposition(models.Model):
     leitsin = models.FloatField(verbose_name='Лейцин', default=0)
     lisin = models.FloatField(verbose_name='Лизин', default=0)
     prolin = models.FloatField(verbose_name='Пролин', default=0)
+
+    def get_amino_acids_subset(self):
+        # Methionine + Cysteine
+        met_cys = self.metionin + self.tsistein
+        # Phenylalanine + Tyrosine
+        phe_tyr = self.fenilalalin + self.tirosin
+
+        return [self.izoleitsin, self.leitsin, self.lisin, met_cys, phe_tyr, 
+                self.treonin, self.triptofan, self.valin]
 
     class Meta:
         verbose_name = ' -- (Аминокислотный Состав) -- '

@@ -18,6 +18,9 @@ def translate(language):
 def mobile_page(request):
     return render(request, 'client_templates/mobile_main_page.html')
 
+def privacy_policy(request):
+    return render(request, 'client_templates/pages/privacy_policy.html')
+
 # Получаем выбранный язык
 def get_lang(trans):
     if trans == 'en':
