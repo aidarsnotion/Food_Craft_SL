@@ -39,6 +39,7 @@ urlpatterns = [
     path('password-reset', PasswordResetRequestAPIView.as_view(), name='password_reset'),
     path('regions', Regions_APIView.as_view(), name='regions_list'),
     path('products-from-region', LoadProductsFromRegionAPIView.as_view(), name='region'),
+    path('categories/', Categories_APIView.as_view(), name='categories_list'),
     path('products/search/', ProductSearchAPIView.as_view(), name='product-search'),
     path('products-by-category/', LoadProductsByCategoryAPIView.as_view(), name='products_by_category'),
     

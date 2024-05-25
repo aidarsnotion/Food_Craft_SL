@@ -75,14 +75,12 @@ class RegionSerializer(serializers.ModelSerializer):
 
 class CategorySerializer(serializers.ModelSerializer):
     """   Категории продуктов  """
-    Name_of_Region = serializers.CharField(source='Region.region')
     
     class Meta:
         model = Categories
         fields = ['id',
                   'Name_of_category',
-                  'Name_of_Region',
-                  'language']
+                  ]
 
 
 class ProductsSerializer(serializers.ModelSerializer):

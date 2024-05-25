@@ -178,6 +178,7 @@ class Regions_APIView(APIView):
     """
     serializer_class = RegionSrializer
     queryset = Regions.objects.all()
+    permission_classes = [AllowAny]
 
     @swagger_auto_schema(
         responses={200: openapi.Schema(
@@ -195,6 +196,35 @@ class Regions_APIView(APIView):
         fl_data = fil_data(language)
 
         queryset = filter_data_region(self.queryset, fl_data, request)
+
+        serializer = self.serializer_class(queryset, many=True)
+        return Response(serializer.data)
+
+
+class Categories_APIView(APIView):
+    """
+    API получение категории
+    """
+    serializer_class = CategorySerializer
+    queryset = Categories.objects.all()
+    permission_classes = [AllowAny]
+
+    @swagger_auto_schema(
+        responses={200: openapi.Schema(
+            type=openapi.TYPE_OBJECT,
+        )},
+        manual_parameters=[
+            openapi.Parameter('language', openapi.IN_QUERY, description="Язык", type=openapi.TYPE_STRING),
+        ]
+    )
+
+    def get(self, request, *args, **kwargs):
+        language = request.query_params.get('language')
+
+        fil_data = namedtuple('filter_data', 'language')
+        fl_data = fil_data(language)
+        queryset = None
+        queryset = filter_data(self.queryset, fl_data, queryset, request)
 
         serializer = self.serializer_class(queryset, many=True)
         return Response(serializer.data)
