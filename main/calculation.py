@@ -30,16 +30,22 @@ def get_amino_acid_composition(ingredient):
         return(error_message)
     
 def total_aminoacids(aminoacids_list, proteins, massfractions):
-    total_values = []
-    
-    for aminoacid, protein, massfraction in zip(aminoacids_list, proteins, massfractions):
-        aminoacid_values = [0 if value == 0 else round(((value / 1000) * float(protein) * float(massfraction)) /
-                            (float(protein) * float(massfraction)), 3)
-                            for value in aminoacid]
-        total_values.append(aminoacid_values)
-    
-    return [sum(values) for values in zip(*total_values)]
+    total_values = []  # Для хранения числителей
+    total_weights = []  # Для хранения знаменателей
 
+    # Проход по каждому аминокислотному набору
+    for aminoacids, protein, massfraction in zip(aminoacids_list, proteins, massfractions):
+        # Рассчитать числитель для текущей группы
+        total_values.append([value * protein * float(massfraction) for value in aminoacids])
+        # Рассчитать знаменатель (вес) для текущей группы
+        total_weights.append(protein * float(massfraction))
+
+    # Суммирование по всем группам
+    numerator = [sum(values) for values in zip(*total_values)]
+    denominator = sum(total_weights)
+
+    # Итоговое значение
+    return [round(value / denominator, 3) if denominator != 0 else 0 for value in numerator]
 
 
 
@@ -47,7 +53,7 @@ def sum_aminoacids(aminoacids_list):
     sums = []
 
     for aminoacid in aminoacids_list:
-        aminoacid_values = [0 if aminoacid[i] == 0 else round((aminoacid[i] / 1000), 3)
+        aminoacid_values = [0 if aminoacid[i] == 0 else round((aminoacid[i]), 3)
                             for i in range(len(aminoacid))]
         # Append aminoacid_values to sums for each amino acid
         sums.append(aminoacid_values)
@@ -61,6 +67,7 @@ def get_non_zero_count(c_amino):
     return sum(1 for value in c_amino if value != 0)
 
 def get_a_amino(c_min, c_amino):
+    print(f"C_amino: {c_amino}")
     return [round((c_min / value), 3) if value != 0 else 0 for value in c_amino]
 
 # def C_aminacids(aminacids_list):
@@ -74,15 +81,55 @@ def get_a_amino(c_min, c_amino):
 #     return c_aminacids
 
 def C_aminacids(aminacids_list):
-    essential_amino_acids = [40, 70, 55, 35, 60, 40, 10, 50]
+    essential_amino_acids = [4, 7, 5, 3.5, 6, 1, 4, 5.5]
     c_aminacids = []
 
     for aminoacid in aminacids_list:
-        value = (aminoacid * 100) / essential_amino_acids[aminacids_list.index(aminoacid)]
+        value = (aminoacid / essential_amino_acids[aminacids_list.index(aminoacid)] * 100)
         c_aminacids.append(value)
         
     return c_aminacids
+
+def calculate_U(row_values, coefficients):
+    """
+    row_values: список списков, где каждая строка соответствует диапазону (например, J4:J12, K4:K12 и т.д.)
+    coefficients: список коэффициентов (например, B22, C22, ... I22)
+    """
+    # Проверка на корректность входных данных
+    if not row_values or not coefficients:
+        raise ValueError("row_values и coefficients не могут быть пустыми.")
+
+    if any(len(row) != len(coefficients) for row in row_values):
+        raise ValueError("Длина каждого списка в row_values должна совпадать с длиной coefficients.")
+
+    # Числитель: сумма произведений
+    numerator = sum(sum(values) * coef for values, coef in zip(row_values, coefficients))
+
+    # Знаменатель: общая сумма всех элементов
+    denominator = sum(sum(values) for values in row_values)
+
+    # Возврат результата с защитой от деления на 0
+    return round(numerator / denominator, 3) if denominator != 0 else 0
+
+
+def calculate_G(row_values, coefficients, denominator):
+    """
+    row_values: список списков, где каждая строка соответствует диапазону (например, K4:K12, L4:L12 и т.д.).
+    coefficients: список коэффициентов (например, C22, D22, ..., J22).
+    denominator: знаменатель (например, B23).
+    """
+    # Проверка входных данных
+    if not row_values or not coefficients or len(row_values[0]) != len(coefficients):
+        raise ValueError("Количество значений в строках row_values должно совпадать с количеством коэффициентов.")
     
+    if denominator == 0:
+        raise ValueError("Знаменатель не может быть равен нулю.")
+
+    # Числитель: сумма произведений
+    numerator = sum(sum(values[i] * (1 - coef) for i, coef in enumerate(coefficients)) for values in row_values)
+
+    # Возвращаем результат
+    return round(numerator / denominator, 3)
 
 def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
     start = time.time()
@@ -112,7 +159,7 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
             aminoacid_composition = get_amino_acid_composition(ingredient[i])   
             if aminoacid_composition != "Не удалось найти аминокислотный состав ингредиентов, сообщите администратору об ошибке и дождитесь исправления!":
                 selected_amino_acids = aminoacid_composition.get_amino_acids_subset()   
-                empty_list.extend(selected_amino_acids) 
+                empty_list.extend((value / 1000 if value > 100 else value) for value in selected_amino_acids)
 
                 aminoacids_list.append(empty_list)  # Перемещаем заполненный список аминокислот в основной список
                 empty_list = []
@@ -120,9 +167,9 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
                 error_flag = 2
                 error_message = aminoacid_composition
 
-        total_amino = total_aminoacids(aminoacids_list, proteins_list, mass_fraction)  
+        total_amino = total_aminoacids(aminoacids_list, proteins_list, mass_fraction)   #M
         print("Total_amino:", total_amino)
-        c_amino = C_aminacids(total_amino)  
+        c_amino = C_aminacids(total_amino)  #C
 
         positive_values = [value for value in c_amino if value > 0]
 
@@ -135,12 +182,10 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
             bc = 100 - kras
 
             amino_sum = sum_aminoacids(aminoacids_list)
-
-            partial_sums = [amino_sum[i] * a_amino[i] if a_amino[i] != 0 else 0 for i in range(len(amino_sum))]
             
-            u = sum(partial_sums) / sum(total_amino)
+            u = calculate_U(aminoacids_list, a_amino)
 
-            g = sum(amino_sum[i] * (1 - a_amino[i]) for i in range(len(amino_sum)))
+            g = calculate_G(aminoacids_list, a_amino, c_min)
 
         else:
             c_min = 0
@@ -185,30 +230,34 @@ def process_recipe(recip_name, reg, ingredient, mass_fraction, price, size):
                 carbohydrates=round(carbohydrates, 3),
                 price_100=round(price_100, 3),
                 price_1kg=round(price_1kg, 3),
+
                 isol=round(total_amino[0], 3),
                 leit=round(total_amino[1], 3),
-                val=round(total_amino[7], 3),
+                val=round(total_amino[2], 3),
                 met_tsist1=round(total_amino[3], 3),
                 fenilalalin_tirosin1=round(total_amino[4], 3),
-                tripto=round(total_amino[6], 3),
-                lis=round(total_amino[2], 3),
-                treon=round(total_amino[5], 3),
+                tripto=round(total_amino[5], 3),
+                lis=round(total_amino[7], 3),
+                treon=round(total_amino[6], 3),
+
                 isolecin2=round(c_amino[0], 3),
                 leitsin2=round(c_amino[1], 3),
-                valin2=round(c_amino[7], 3),
+                valin2=round(c_amino[2], 3),
                 met_tsist3=round(c_amino[3], 3),
                 fenilalalin_tirosin3=round(c_amino[4], 3),
-                triptofan2=round(c_amino[6], 3),
-                lisin2=round(c_amino[2], 3),
-                treonin2=round(c_amino[5], 3),
-                isolecin_a=round(c_amino[0], 3),
+                triptofan2=round(c_amino[5], 3),
+                lisin2=round(c_amino[7], 3),
+                treonin2=round(c_amino[6], 3),
+
+                isolecin_a=round(a_amino[0], 3),
                 leitsin_a=round(a_amino[1], 3),
-                valin_a=round(a_amino[7], 3),
+                valin_a=round(a_amino[2], 3),
                 met_tsist_a=round(a_amino[3], 3),
                 fenilalalin_tirosin_a=round(a_amino[4], 3),
-                triptofan_a=round(a_amino[6], 3),
-                lisin_a=round(a_amino[2], 3),
+                triptofan_a=round(a_amino[5], 3),
+                lisin_a=round(a_amino[7], 3),
                 treonin_a=round(a_amino[6], 3),
+
                 Cmin=round(c_min, 3),
                 power_kkal=round(power_kkal, 3),
                 power_kDj=round(power_kDj, 3),

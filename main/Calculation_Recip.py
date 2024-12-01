@@ -3,10 +3,6 @@ from collections import namedtuple
 import time
 import sys
 
-#API reset password
-#API product detail 
-#API login with API key
-
 
 AminoAcids = namedtuple('AminoAcids', [
     'isol', 'leit', 'val', 'met_tsist', 
@@ -148,14 +144,14 @@ def calculate_aminoacid_scores(aminoacids_total):
     """
     Рассчитывает аминокислотные скоры на основе объекта aminoacids_total.
     """
-    isolecin = (aminoacids_total.isol / 4) * 100
-    leitsin = (aminoacids_total.leit / 7) * 100
-    valin = (aminoacids_total.val / 5) * 100
-    met_tsist = (aminoacids_total.met_tsist / 3.5) * 100
-    fenilalalin_tirosin = (aminoacids_total.fenilalalin_tirosin / 6) * 100
-    triptofan = (aminoacids_total.tripto / 1) * 100
-    lisin = (aminoacids_total.lis / 5.5) * 100
-    treonin = (aminoacids_total.treon / 4) * 100
+    isolecin = (aminoacids_total.isol / 40) * 100
+    leitsin = (aminoacids_total.leit / 70) * 100
+    valin = (aminoacids_total.val / 50) * 100
+    met_tsist = (aminoacids_total.met_tsist / 35) * 100
+    fenilalalin_tirosin = (aminoacids_total.fenilalalin_tirosin / 60) * 100
+    triptofan = (aminoacids_total.tripto / 10) * 100
+    lisin = (aminoacids_total.lis / 55) * 100
+    treonin = (aminoacids_total.treon / 40) * 100
     
     return AminoAcids_SCOR(
         isol=isolecin,

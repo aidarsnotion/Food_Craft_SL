@@ -66,7 +66,7 @@ class Products(models.Model):
         verbose_name = ' -- Наименование продукта -- '
     
     def __str__(self):
-        return f"{self.attribute_name}"
+        return f"{self.attribute_name} - {self.Category.Region.region}"
 
 # Виды Жирнокислоты
 class FatAcids(models.Model):
@@ -155,8 +155,8 @@ class AminoAcidComposition(models.Model):
         # Phenylalanine + Tyrosine
         phe_tyr = self.fenilalalin + self.tirosin
 
-        return [self.izoleitsin, self.leitsin, self.lisin, met_cys, phe_tyr, 
-                self.treonin, self.triptofan, self.valin]
+        return [self.izoleitsin, self.leitsin, self.valin, met_cys, phe_tyr,  
+                self.triptofan, self.treonin, self.lisin]
 
     class Meta:
         verbose_name = ' -- (Аминокислотный Состав) -- '
